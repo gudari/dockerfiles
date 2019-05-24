@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  zookeeper-server:
+    image: gudari/zookeeper:3.4.14
+    container_name: zookeeper-server
+    hostname: zookeeper-server
+    env_file:
+    - zookeeper.env
+  zookeeper-rest:
+    image: gudari/zookeeper-rest:3.4.14
+    container_name: zookeeper-rest
+    hostname: zookeeper-rest
+    env_file:
+    - zookeeper-rest.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop-hoster
+    hostname: hadoop-hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
