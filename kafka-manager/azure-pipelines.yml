@@ -6,13 +6,17 @@ pool:
 steps:
 - task: Bash@3
   inputs:
-    targetType: 'filePath'
-    scriptPath: 'build.sh'
-    workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build'
-- task: CmdLine@2
+    targetType: 'inline'
+    script: 'export DOCKER_PASSWORD: $(docker_password)
+      export DOCKER_USERNAME: $(docker_username)'
+- task: Bash@3
   inputs:
-    script: './push.sh'
+    targetType: 'filePath'
+    filePath: 'build.sh'
     workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build'
-    env:
-      DOCKER_PASSWORD: $(docker_password)
-      DOCKER_USERNAME: $(docker_username)
+- task: Bash@3
+  inputs:
+    targetType: 'filePath'
+    filePath: 'push.sh'
+    workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build'
+
