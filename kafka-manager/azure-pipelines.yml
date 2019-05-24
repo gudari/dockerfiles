@@ -4,7 +4,7 @@ trigger:
     - master
   paths:
     include:
-    - build/*
+    - kafka-manager/build/*
 
 pool:
   vmImage: 'Ubuntu-16.04'
