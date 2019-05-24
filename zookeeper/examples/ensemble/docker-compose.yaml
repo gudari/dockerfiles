@@ -1,0 +1,54 @@
+version: "3.7"
+
+services:
+  zookeeper-server-1:
+    image: gudari/zookeeper:3.4.14
+    container_name: zookeeper-server-1
+    hostname: zookeeper-server-1
+    environment:
+      ZOO_CFG_server_1: "zookeeper-server-1:2888:3888"
+      ZOO_CFG_server_2: "zookeeper-server-2:2888:3888"
+      ZOO_CFG_server_3: "zookeeper-server-3:2888:3888"
+      ZOO_MYID: 1
+    env_file:
+    - zookeeper.env
+
+  zookeeper-server-2:
+    image: gudari/zookeeper:3.4.14
+    container_name: zookeeper-server-2
+    hostname: zookeeper-server-2
+    environment:
+      ZOO_CFG_server_1: "zookeeper-server-1:2888:3888"
+      ZOO_CFG_server_2: "zookeeper-server-2:2888:3888"
+      ZOO_CFG_server_3: "zookeeper-server-3:2888:3888"
+      ZOO_MYID: 2
+    env_file:
+    - zookeeper.env
+
+  zookeeper-server-3:
+    image: gudari/zookeeper:3.4.14
+    container_name: zookeeper-server-3
+    hostname: zookeeper-server-3
+    environment:
+      ZOO_CFG_server_1: "zookeeper-server-1:2888:3888"
+      ZOO_CFG_server_2: "zookeeper-server-2:2888:3888"
+      ZOO_CFG_server_3: "zookeeper-server-3:2888:3888"
+      ZOO_MYID: 3
+    env_file:
+    - zookeeper.env
+
+  zkui:
+    image: gudari/zkui:2.0-SNAPSHOT
+    container_name: zkui
+    hostname: zkui
+    env_file:
+    - zkui.env
+
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
