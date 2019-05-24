@@ -1,5 +1,8 @@
 FROM gudari/java:8u201-b09
 
+LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
+LABEL Description="Apache Zookeeper docker image" Version=3.4.14
+
 ARG ZOOKEEPER_VERSION=3.4.14
 ENV ZOOKEEPER_HOME=/opt/zookeeper
 
