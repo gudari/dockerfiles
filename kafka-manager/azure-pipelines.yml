@@ -1,4 +1,10 @@
-trigger: none
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - build/*
 
 pool:
   vmImage: 'Ubuntu-16.04'
