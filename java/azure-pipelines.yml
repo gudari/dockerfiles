@@ -1,0 +1,21 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - java/build/*
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- bash: |
+    cd $(Build.SourcesDirectory)/java/build
+    ./build.sh
+- bash: |
+    export DOCKER_PASSWORD=$(docker_password)
+    export DOCKER_USERNAME=$(docker_username)
+    cd $(Build.SourcesDirectory)/java/build
+    ./push.sh
+
