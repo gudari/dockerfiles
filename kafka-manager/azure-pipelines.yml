@@ -9,8 +9,8 @@ steps:
     targetType: 'inline'
     script: 'export DOCKER_PASSWORD=$(docker_password)
       export DOCKER_USERNAME=$(docker_username)'
-- script: 'build.sh'
-  workingDirectory: 'kafka-manager/build'
-- script: 'push.sh'
-  workingDirectory: 'kafka-manager/build'
+- bash: build.sh
+  workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build/'
+- bash:
+  workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build/'
 
