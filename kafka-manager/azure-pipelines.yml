@@ -1,5 +1,5 @@
 trigger: none
- 
+
 pool:
   vmImage: 'Ubuntu-16.04'
 
@@ -9,10 +9,9 @@ steps:
     targetType: 'filePath'
     scriptPath: 'build.sh'
     workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build'
-- task: Bash@3
+- task: CmdLine@2
   inputs:
-    targetType: 'filePath'
-    scriptPath: 'push.sh'
+    script: './push.sh'
     workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build'
     env:
       DOCKER_PASSWORD: $(docker_password)
