@@ -4,13 +4,12 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'export DOCKER_PASSWORD=$(docker_password)
-      export DOCKER_USERNAME=$(docker_username)'
-- bash: build.sh
-  workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build/'
-- bash:
-  workingDirectory: '$(Build.SourcesDirectory)/kafka-manager/build/'
+- bash: |
+    cd $(Build.SourcesDirectory)/kafka-manager/build
+    ./build.sh
+- bash: |
+    export DOCKER_PASSWORD=$(docker_password)
+    export DOCKER_USERNAME=$(docker_username)
+    cd $(Build.SourcesDirectory)/kafka-manager/build
+    ./push.sh
 
