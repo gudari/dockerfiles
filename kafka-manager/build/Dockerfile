@@ -18,6 +18,9 @@ RUN yum install -y unzip && \
 
 FROM gudari/java:8u201-b09
 
+LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
+LABEL Description="Kafka manager docker image" Version=2.0.0.2
+
 ARG KAFKAMANAGER_VERSION=2.0.0.2
 ENV KAFKAMANAGER_HOME=/opt/kafka-manager
 
