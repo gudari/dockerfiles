@@ -12,11 +12,11 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'filePath'
-    filePath: 'build.sh'
+    script: 'build.sh'
     workingDirectory: '$(System.DefaultWorkingDirectory)/kafka-manager/build'
 - task: Bash@3
   inputs:
     targetType: 'filePath'
-    filePath: 'push.sh'
+    script: 'push.sh'
     workingDirectory: '$(System.DefaultWorkingDirectory)/kafka-manager/build'
 
