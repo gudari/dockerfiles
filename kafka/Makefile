@@ -2,6 +2,7 @@ IMAGE_NAME := gudari/kafka
 BASE_IMAGE := gudari/java:8u201-b09
 ZOOKEEPER_VERSION := 3.4.14
 KAFKA_MANAGER_VERSION := 2.0.0.2
+BUILD_DATE:= `date +"%y.%m.%d"`
 
 0X_VERSIONS := \
 		0.11.0.3
@@ -38,7 +39,13 @@ dockerfile-all:
 	))
 
 image:
-	docker build -t $(IMAGE_NAME):$(VERSION) build/$(VERSION) --build-arg KAFKA_VERSION=$(VERSION) --build-arg SCALA_VERSION=$(SCALA_VERSION)
+	docker build \
+		--build-arg KAFKA_VERSION=$(VERSION) \
+		--build-arg SCALA_VERSION=$(SCALA_VERSION) \
+		-t $(IMAGE_NAME):$(VERSION)-$(BUILD_DATE) \
+		-t $(IMAGE_NAME):$(VERSION) \
+		-t $(IMAGE_NAME):latest \
+		build/$(VERSION)
 
 image-all:
 	(set -e ; $(foreach ver, $(0X_VERSIONS) $(1X_VERSIONS), \
@@ -122,7 +129,9 @@ build-all:
 
 push:
 	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+	docker push $(IMAGE_NAME):$(VERSION)-$(BUILD_DATE)
 	docker push $(IMAGE_NAME):$(VERSION)
+	docker push $(IMAGE_NAME):latest
 
 push-all:
 	(set -e ; $(foreach ver,$(0X_VERSIONS) $(1X_VERSIONS), \
