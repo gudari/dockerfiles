@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  zookeeper-server:
+    image: gudari/zookeeper:3.4.14
+    container_name: zookeeper-server
+    hostname: zookeeper-server
+    env_file:
+    - zookeeper.env
+  kafka-broker:
+    image: gudari/kafka:2.2.0
+    container_name: kafka-broker
+    hostname: kafka-broker
+    env_file:
+    - kafka.env
+  zookeeper-zkui:
+    image: gudari/zkui:2.0-SNAPSHOT
+    container_name: zookeeper-zkui
+    hostname: zookeeper-zkui
+    env_file:
+    - zkui.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
