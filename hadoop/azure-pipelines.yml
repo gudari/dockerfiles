@@ -1,0 +1,20 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - hadoop/Makefile
+    - hadoop/scripts/*
+    - hadoop/build/*
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- bash: |
+    export DOCKER_PASSWORD=$(docker_password)
+    export DOCKER_USERNAME=$(docker_username)
+    cd $(Build.SourcesDirectory)/hadoop
+    make release-all
+
