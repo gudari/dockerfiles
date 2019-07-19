@@ -1,10 +1,10 @@
 FROM gudari/java:8u201-b09
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Kafka docker image" Version="2.2.0" Scala_version="2.12"
+LABEL Description="Kafka docker image" Version="2.3.0" Scala_version="2.12"
 
 
-ARG KAFKA_VERSION=2.2.0
+ARG KAFKA_VERSION=2.3.0
 ARG SCALA_VERSION=2.12
 ENV KAFKA_HOME=/opt/kafka
 

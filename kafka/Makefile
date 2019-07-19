@@ -12,7 +12,9 @@ BUILD_DATE:= `date +"%y.%m.%d"`
 2X_VERSIONS := \
 		2.0.1 \
 		2.1.1 \
-		2.2.0
+		2.2.1
+3X_VERSIONS := \
+		2.3.0
 
 ALL_VERSIONS := $(0X_VERSIONS) $(1X_VERSIONS) $(2X_VERSIONS)
 
@@ -32,7 +34,7 @@ dockerfile-all:
 			VERSION=$(ver) \
 			SCALA_VERSION=2.11 ; \
 	))
-	(set -e ; $(foreach ver, $(2X_VERSIONS), \
+	(set -e ; $(foreach ver, $(2X_VERSIONS) $(3X_VERSIONS), \
 		make dockerfile \
 			VERSION=$(ver) \
 			SCALA_VERSION=2.12 ; \
@@ -53,7 +55,7 @@ image-all:
 			VERSION=$(ver) \
 			SCALA_VERSION=2.11 ; \
 	))
-	(set -e ; $(foreach ver, $(2X_VERSIONS), \
+	(set -e ; $(foreach ver, $(2X_VERSIONS) $(3X_VERSIONS), \
 		make image \
 			VERSION=$(ver) \
 			SCALA_VERSION=2.12 ; \
@@ -121,7 +123,7 @@ build-all:
 			VERSION=$(ver) \
 			SCALA_VERSION=2.11 ; \
 	))
-	(set -e ; $(foreach ver,$(2X_VERSIONS), \
+	(set -e ; $(foreach ver,$(2X_VERSIONS) $(3X_VERSIONS), \
 		make build \
 			VERSION=$(ver) \
 			SCALA_VERSION=2.12 ; \
@@ -139,7 +141,7 @@ push-all:
 			VERSION=$(ver) \
 			SCALA_VERSION=2.11 ; \
 	))
-	(set -e ; $(foreach ver,$(2X_VERSIONS), \
+	(set -e ; $(foreach ver,$(2X_VERSIONS) $(3X_VERSIONS), \
 		make push \
 			VERSION=$(ver) \
 			SCALA_VERSION=2.12 ; \

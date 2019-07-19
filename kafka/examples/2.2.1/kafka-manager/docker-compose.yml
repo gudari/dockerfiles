@@ -12,8 +12,9 @@ services:
         limits:
           cpus: '0.25'
           memory: 100M
+  
   kafka-broker-0:
-    image: gudari/kafka:2.2.0
+    image: gudari/kafka:2.2.1
     container_name: kafka-broker-0
     hostname: kafka-broker-0
     environment:
@@ -25,8 +26,8 @@ services:
         limits:
           cpus: '0.5'
           memory: 100M
-    kafka-broker-1:
-    image: gudari/kafka:2.2.0
+  kafka-broker-1:
+    image: gudari/kafka:2.2.1
     container_name: kafka-broker-1
     hostname: kafka-broker-1
     environment:
@@ -39,7 +40,7 @@ services:
           cpus: '0.5'
           memory: 100M
   kafka-broker-2:
-    image: gudari/kafka:2.2.0
+    image: gudari/kafka:2.2.1
     container_name: kafka-broker-2
     hostname: kafka-broker-2
     environment:
@@ -51,6 +52,13 @@ services:
         limits:
           cpus: '0.5'
           memory: 100M
+
+  kafka-manager:
+    image: gudari/kafkamanager:2.0.0.2
+    container_name: kafka-manager
+    hostname: kafka-manager
+    env_file:
+    - kafka-manager.env
 
   hoster:
     image: dvdarias/docker-hoster

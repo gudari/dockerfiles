@@ -8,7 +8,7 @@ services:
     env_file:
     - zookeeper.env
   kafka-broker:
-    image: gudari/kafka:2.2.0
+    image: gudari/kafka:2.2.1
     container_name: kafka-broker
     hostname: kafka-broker
     env_file:
