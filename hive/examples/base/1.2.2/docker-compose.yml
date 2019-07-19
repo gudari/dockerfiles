@@ -1,0 +1,96 @@
+version: "3.5"
+
+services:
+  namenode:
+    image: gudari/hadoop:2.7.7
+    container_name: namenode
+    hostname: namenode
+    environment:
+      - CLUSTER_NAME=local
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+  datanode:
+    image: gudari/hadoop:2.7.7
+    container_name: datanode
+    hostname: datanode
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+  hive-metastore-mysql:
+    image: mysql:5.6.40
+    env_file:
+      - ./mysql.env
+    container_name: hive-metastore-mysql
+    hostname: hive-metastore-mysql
+    networks:
+      - docker.local
+
+  hive-metastore:
+    image: gudari/hive:1.2.2
+    env_file:
+      - ./hive.env
+      - ./hadoop.env
+    container_name: hive-metastore
+    hostname: hive-metastore
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-mysql:3306"
+    depends_on:
+      - namenode
+      - datanode1
+      - hive-metastore-mysql
+    networks:
+      - docker.local
+
+  hive-hiveserver2:
+    image: gudari/hive:1.2.2
+    env_file:
+      - ./hive.env
+      - ./hadoop.env
+    container_name: hive-hiveserver2
+    hostname: hive-hiveserver2
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-mysql:3306 hive-metastore:9083"
+    depends_on:
+      - namenode
+      - datanode1
+      - hive-metastore-mysql
+      - hive-metastore
+    networks:
+      - docker.local
+
+  resourcemanager:
+    image: gudari/hadoop:2.7.7
+    container_name: resourcemanager
+    hostname: resourcemanager
+    depends_on:
+      - namenode
+      - datanode1
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+  nodemanager:
+    image: gudari/hadoop:2.7.7
+    container_name: nodemanager
+    hostname: nodemanager
+    depends_on:
+      - namenode
+      - datanode1
+      - resourcemanager
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+networks:
+  docker.local:
+    driver: bridge
+    name: docker.local

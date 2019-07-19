@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  nifi-node:
+    image: gudari/nifi:1.7.1
+    container_name: nifi-node
+    hostname: nifi-node
+    env_file:
+    - nifi.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
