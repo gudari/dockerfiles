@@ -1,6 +1,6 @@
 IMAGE_NAME := gudari/hadoop
-BASE_IMAGE := gudari/java:8.0.212
-BUILD_DATE:= `date +"%y.%m.%d"`
+BASE_IMAGE := gudari/java:8u201-b09
+BUILD_DATE := `date +"%y.%m.%d"`
 
 2X_VERSIONS := \
 		2.7.7 \
@@ -30,8 +30,7 @@ dockerfile-all:
 
 image:
 	docker build \
-		--build-arg KAFKA_VERSION=$(VERSION) \
-		--build-arg SCALA_VERSION=$(SCALA_VERSION) \
+		--build-arg HADOOP_VERSION=$(VERSION) \
 		-t $(IMAGE_NAME):$(VERSION)-$(BUILD_DATE) \
 		-t $(IMAGE_NAME):$(VERSION) \
 		-t $(IMAGE_NAME):latest \

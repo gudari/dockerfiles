@@ -198,6 +198,7 @@ done
 
 if [[ "${HOSTNAME}" =~ "namenode" ]]; then
   namedir=`echo $HDFS_CONF_dfs_namenode_name_dir | sed -e 's#file://##'`
+  mkdir -p $namedir
   if [ ! -d $namedir ]; then
     echo "Namenode name directory not found: $namedir"
     exit 2
@@ -218,6 +219,7 @@ fi
 
 if [[ "${HOSTNAME}" =~ "datanode" ]]; then
   datadir=`echo $HDFS_CONF_dfs_datanode_data_dir | sed -e 's#file://##'`
+  mkdir -p $datadir
   if [ ! -d $datadir ]; then
     echo "Datanode data directory not found: $datadir"
     exit 2
