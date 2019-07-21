@@ -5,11 +5,12 @@ ZOOKEEPER_VERSION := 3.4.14
 BUILD_DATE := `date +"%y.%m.%d"`
 
 1X_VERSIONS := 1.2.12 \
-			   1.3.3 \
-			   1.4.9
+			   1.3.5 \
+			   1.4.10
 
 2X_VERSIONS := 2.0.5 \
-		       2.1.4
+		       2.1.5 \
+			   2.2.0
 
 ALL_VERSIONS := $(1X_VERSIONS) $(2X_VERSIONS)
 
