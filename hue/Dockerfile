@@ -4,7 +4,7 @@ ARG HUE_VERSION=4.4.0
 ENV HUE_HOME=/opt/hue
 
 RUN yum install -y epel-release which && \
-    buildDep="ant gcc gcc-c++ make maven wget which nodejs" && \
+    buildDep="ant gcc gcc-c++ make maven wget nodejs" && \
     yum install -y $buildDep \
     asciidoc \
     cyrus-sasl-devel \
