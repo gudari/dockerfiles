@@ -8,6 +8,8 @@ trigger:
     - hadoop/scripts/*
     - hadoop/build/*
 
+pr: none
+
 pool:
   vmImage: 'Ubuntu-16.04'
 
