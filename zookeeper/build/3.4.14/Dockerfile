@@ -1,7 +1,7 @@
-FROM gudari/java:8u201-b09
+FROM gudari/java:8.0.212
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Apache Zookeeper docker image" Version=3.4.14
+LABEL Description="Apache Zookeeper docker image" Version="3.4.14"
 
 ARG ZOOKEEPER_VERSION=3.4.14
 ENV ZOOKEEPER_HOME=/opt/zookeeper
@@ -23,7 +23,7 @@ RUN yum install -y wget && \
 
 WORKDIR ${ZOOKEEPER_HOME}
 
-COPY scritps/bootstrap.sh /opt/init/bootstrap.sh
+COPY scripts/bootstrap.sh /opt/init/bootstrap.sh
 RUN chmod +x /opt/init/bootstrap.sh
 
 CMD /opt/init/bootstrap.sh

@@ -4,6 +4,8 @@ trigger:
     - master
   paths:
     include:
+    - zookeeper/Makefile
+    - zookeeper/scripts/*
     - zookeeper/build/*
 
 pool:
@@ -11,11 +13,9 @@ pool:
 
 steps:
 - bash: |
-    cd $(Build.SourcesDirectory)/zookeeper/build
-    ./build.sh
-- bash: |
     export DOCKER_PASSWORD=$(docker_password)
     export DOCKER_USERNAME=$(docker_username)
-    cd $(Build.SourcesDirectory)/zookeeper/build
-    ./push.sh
+    cd $(Build.SourcesDirectory)/zookeeper
+    make release-all
+
 
