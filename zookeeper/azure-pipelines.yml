@@ -8,6 +8,8 @@ trigger:
     - zookeeper/scripts/*
     - zookeeper/build/*
 
+pr: none
+
 pool:
   vmImage: 'Ubuntu-16.04'
 

@@ -6,6 +6,8 @@ trigger:
     include:
     - zookeeper-rest/build/*
 
+pr: none
+
 pool:
   vmImage: 'Ubuntu-16.04'
 

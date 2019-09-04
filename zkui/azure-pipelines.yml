@@ -5,6 +5,7 @@ trigger:
   paths:
     include:
     - zkui/build/*
+pr: none
 
 pool:
   vmImage: 'Ubuntu-16.04'
