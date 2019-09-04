@@ -7,11 +7,7 @@ services:
     hostname: zookeeper-server
     env_file:
     - zookeeper.env
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 100M
+
   kafka-broker-0:
     image: gudari/kafka:2.3.0
     container_name: kafka-broker-0
@@ -20,12 +16,7 @@ services:
       - SERVER_PROPERTIES_broker_id=0
     env_file:
     - kafka-cluster.env
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 100M
-    kafka-broker-1:
+  kafka-broker-1:
     image: gudari/kafka:2.3.0
     container_name: kafka-broker-1
     hostname: kafka-broker-1
@@ -33,11 +24,6 @@ services:
       - SERVER_PROPERTIES_broker_id=1
     env_file:
     - kafka-cluster.env
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 100M
   kafka-broker-2:
     image: gudari/kafka:2.3.0
     container_name: kafka-broker-2
@@ -46,11 +32,6 @@ services:
       - SERVER_PROPERTIES_broker_id=2
     env_file:
     - kafka-cluster.env
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 100M
 
   hoster:
     image: dvdarias/docker-hoster
