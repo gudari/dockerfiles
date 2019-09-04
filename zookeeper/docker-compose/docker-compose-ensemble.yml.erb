@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+<% @max = 3%>
+<% for @i in 1..@max%>
+  zookeeper-server-<%= @i %>:
+    image: gudari/zookeeper:<%= version %>
+    container_name: zookeeper-server-<%= @i %>
+    hostname: zookeeper-server-<%= @i %>
+    environment:
+<% for @j in 1..@max -%>
+      ZOO_CFG_server_<%= @j %>: "zookeeper-server-<%= @j %>:2888:3888"
+      ZOO_CFG_server_<%= @j %>: "zookeeper-server-<%= @j %>:2888:3888"
+      ZOO_CFG_server_<%= @j %>: "zookeeper-server-<%= @j %>:2888:3888"
+<% end -%>
+      ZOO_MYID: <%= @i %>
+    env_file:
+    - zookeeper.env
+<% end %>
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
