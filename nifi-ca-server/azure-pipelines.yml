@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-    - nifi-toolkit-server
+    - nifi_toolkit-server
   paths:
     include:
     - nifi-ca-server/build/*
