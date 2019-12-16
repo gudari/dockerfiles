@@ -21,3 +21,6 @@ Those are my docker containers created for testing and learning
 
 - ### [zkui](https://github.com/DeemOpen/zkui.git): <a href="https://hub.docker.com/r/gudari/zkui"><img src="https://d36jcksde1wxzq.cloudfront.net/be7833db9bddb4494d2a7c3dd659199a.png" align="center" height="24" width="24" ></a>
     [![Build Status](https://dev.azure.com/aartola1986/docker.containers/_apis/build/status/zkui?branchName=master)](https://dev.azure.com/aartola1986/docker.containers/_build/latest?definitionId=5&branchName=master)
+
+- ### [Apache Zeppelin](https://zeppelin.apache.org/): <a href="https://hub.docker.com/r/gudari/zeppelin"><img src="https://d36jcksde1wxzq.cloudfront.net/be7833db9bddb4494d2a7c3dd659199a.png" align="center" height="24" width="24" ></a>
+    [![Build Status](https://dev.azure.com/aartola1986/docker.containers/_apis/build/status/zeppelin?branchName=master)](https://dev.azure.com/aartola1986/docker.containers/_build/latest?definitionId=7&branchName=master)
