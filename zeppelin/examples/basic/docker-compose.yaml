@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  zeppelin:
+    image: gudari/zeppelin:0.8.2
+    container_name: zeppelin
+    hostname: zeppelin
+    env_file:
+    - zeppelin.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
