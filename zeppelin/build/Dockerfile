@@ -31,18 +31,18 @@ ENV PATH /opt/conda/bin:$PATH
 COPY requirements.txt /opt/init/requirements.txt
 RUN echo "$LOG_TAG Install python related packages" && \
     conda install -y -q --file /opt/init/requirements.txt && \
-    pip install bkzep==0.4.0 ggplot==0.11.5
+    pip install --no-cache-dir bkzep==0.4.0 ggplot==0.11.5 && \
+    conda clean -a -y
 
 RUN echo "$LOG_TAG Install R related packages" && \
     yum install -y epel-release && \
-    yum install -y R && \
+    yum install -y R libcurl libcurl-devel openssl-devel && \
     R -e "install.packages('knitr', repos='http://cran.us.r-project.org')" && \
     R -e "install.packages('ggplot2', repos='http://cran.us.r-project.org')" && \
     R -e "install.packages('googleVis', repos='http://cran.us.r-project.org')" && \
     R -e "install.packages('data.table', repos='http://cran.us.r-project.org')" && \
     R -e "install.packages('devtools', repos='http://cran.us.r-project.org')" && \
     R -e "install.packages('Rcpp', repos='http://cran.us.r-project.org')" && \
-    Rscript -e "library('devtools'); library('Rcpp'); install_github('ramnathv/rCharts')" && \
     yum remove -y epel-release && \
     yum autoremove -y && \
     yum clean all -y && \
@@ -53,4 +53,5 @@ WORKDIR ${ZEPPELIN_HOME}
 COPY scripts/bootstrap.sh /opt/init/bootstrap.sh
 RUN chmod 777 /opt/init/bootstrap.sh
 
+EXPOSE 8080
 CMD ["/opt/init/bootstrap.sh"]
