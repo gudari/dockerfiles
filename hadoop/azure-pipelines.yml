@@ -19,4 +19,3 @@ steps:
     export DOCKER_USERNAME=$(docker_username)
     cd $(Build.SourcesDirectory)/hadoop
     make release-all
-

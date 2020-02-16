@@ -1,21 +1,23 @@
-FROM gudari/java:8.0.212
+FROM gudari/openjdk:8.0.242
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Hadoop docker image" Version="2.7.7"
 
 ARG HADOOP_VERSION=2.7.7
 ENV HADOOP_HOME=/opt/hadoop
+ENV INIT_DIR=/opt/init
 
-RUN yum install -y wget which nc && \
-    wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
-    mkdir $HADOOP_HOME && \
-    tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 && \
-    rm -fr hadoop-${HADOOP_VERSION}.tar.gz && \
-    yum remove -y wget && \
-    yum autoremove -y && \
-    yum clean all -y && \
-    rm -fr /var/cache/yum && \
-    mkdir -p /opt/init
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y wget netcat \
+    && wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
+    && mkdir -p $HADOOP_HOME \
+    && tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 \
+    && rm -fr hadoop-${HADOOP_VERSION}.tar.gz \
+    && apt-get remove -y wget \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p ${INIT_DIR}
 
 ENV HADOOP_PREFIX=${HADOOP_HOME} \
     HADOOP_COMMON_HOME=${HADOOP_HOME} \

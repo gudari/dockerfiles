@@ -5,17 +5,19 @@ LABEL Description="Hadoop docker image" Version="<%= version %>"
 
 ARG HADOOP_VERSION=<%= version %>
 ENV HADOOP_HOME=/opt/hadoop
+ENV INIT_DIR=/opt/init
 
-RUN yum install -y wget which nc && \
-    wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
-    mkdir $HADOOP_HOME && \
-    tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 && \
-    rm -fr hadoop-${HADOOP_VERSION}.tar.gz && \
-    yum remove -y wget && \
-    yum autoremove -y && \
-    yum clean all -y && \
-    rm -fr /var/cache/yum && \
-    mkdir -p /opt/init
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y wget netcat \
+    && wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
+    && mkdir -p $HADOOP_HOME \
+    && tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 \
+    && rm -fr hadoop-${HADOOP_VERSION}.tar.gz \
+    && apt-get remove -y wget \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p ${INIT_DIR}
 
 ENV HADOOP_PREFIX=${HADOOP_HOME} \
     HADOOP_COMMON_HOME=${HADOOP_HOME} \
@@ -28,7 +30,7 @@ ENV HADOOP_PREFIX=${HADOOP_HOME} \
 
 WORKDIR $HADOOP_PREFIX
 
-COPY scripts/bootstrap.sh /opt/init/bootstrap.sh
-RUN chmod +x /opt/init/bootstrap.sh
+COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
+RUN chmod +x ${INIT_DIR}/bootstrap.sh
 
-CMD /opt/init/bootstrap.sh
+CMD ${INIT_DIR}/bootstrap.sh

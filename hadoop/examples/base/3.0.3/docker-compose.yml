@@ -5,6 +5,8 @@ services:
     image: gudari/hadoop:3.0.3
     container_name: namenode
     hostname: namenode
+    ports:
+    - "50070:50070"
     volumes:
       - ./data/namenode:/hadoop/dfs/name
     environment:

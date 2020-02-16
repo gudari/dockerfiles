@@ -1,4 +1,4 @@
-FROM gudari/java:8.0.212
+FROM gudari/zulu8jdk:8.0.192
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Hadoop docker image" Version="2.9.2"
@@ -6,15 +6,11 @@ LABEL Description="Hadoop docker image" Version="2.9.2"
 ARG HADOOP_VERSION=2.9.2
 ENV HADOOP_HOME=/opt/hadoop
 
-RUN yum install -y wget which nc && \
-    wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
+RUN wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
     mkdir $HADOOP_HOME && \
     tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 && \
     rm -fr hadoop-${HADOOP_VERSION}.tar.gz && \
-    yum remove -y wget && \
-    yum autoremove -y && \
-    yum clean all -y && \
-    rm -fr /var/cache/yum && \
+    apk add --no-cache bash && \
     mkdir -p /opt/init
 
 ENV HADOOP_PREFIX=${HADOOP_HOME} \
