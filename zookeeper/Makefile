@@ -1,17 +1,17 @@
 IMAGE_NAME := gudari/zookeeper
-BASE_IMAGE := gudari/java:8.0.212
+BASE_IMAGE := gudari/openjdk:8.0.242
 BUILD_DATE := `date +"%y.%m.%d"`
 ZKUI_VERSION := 2.0-SNAPSHOT
 
 ALL_VERSIONS := \
 		3.4.14 \
-		3.5.5
+		3.5.6
 
 dockerfile:
 	mkdir -p build/$(VERSION)/scripts
 	cp scripts/bootstrap.sh build/$(VERSION)/scripts/bootstrap.sh
 	docker run --rm -i -v $(PWD)/Dockerfile.template.erb:/Dockerfile.erb:ro \
-		ruby:alpine erb -U -T 0 \
+		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
 			base_image='$(BASE_IMAGE)' \
 		/Dockerfile.erb > build/$(VERSION)/Dockerfile
