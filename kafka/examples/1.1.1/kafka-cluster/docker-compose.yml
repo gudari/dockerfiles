@@ -16,7 +16,7 @@ services:
       - SERVER_PROPERTIES_broker_id=0
     env_file:
     - kafka-cluster.env
-    kafka-broker-1:
+  kafka-broker-1:
     image: gudari/kafka:1.1.1
     container_name: kafka-broker-1
     hostname: kafka-broker-1

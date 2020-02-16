@@ -7,9 +7,9 @@ services:
     hostname: zookeeper-server
     env_file:
     - zookeeper.env
-
+  
   kafka-broker-0:
-    image: gudari/kafka:0.11.0.3
+    image: gudari/kafka:2.1.1
     container_name: kafka-broker-0
     hostname: kafka-broker-0
     environment:
@@ -17,7 +17,7 @@ services:
     env_file:
     - kafka-cluster.env
   kafka-broker-1:
-    image: gudari/kafka:0.11.0.3
+    image: gudari/kafka:2.1.1
     container_name: kafka-broker-1
     hostname: kafka-broker-1
     environment:
@@ -25,13 +25,20 @@ services:
     env_file:
     - kafka-cluster.env
   kafka-broker-2:
-    image: gudari/kafka:0.11.0.3
+    image: gudari/kafka:2.1.1
     container_name: kafka-broker-2
     hostname: kafka-broker-2
     environment:
       - SERVER_PROPERTIES_broker_id=2
     env_file:
     - kafka-cluster.env
+
+    cmak:
+    image: gudari/cmak:2.0.0.2
+    container_name: cmak
+    hostname: cmak
+    env_file:
+    - kcmak.env
 
   hoster:
     image: dvdarias/docker-hoster

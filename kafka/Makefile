@@ -1,7 +1,7 @@
 IMAGE_NAME := gudari/kafka
-BASE_IMAGE := gudari/java:8.0.212
+BASE_IMAGE := gudari/openjdk:8.0.242
 ZOOKEEPER_VERSION := 3.4.14
-KAFKA_MANAGER_VERSION := 2.0.0.2
+CMAK_VERSION := 2.0.0.2
 BUILD_DATE:= `date +"%y.%m.%d"`
 
 0X_VERSIONS := \
@@ -12,8 +12,9 @@ BUILD_DATE:= `date +"%y.%m.%d"`
 2X_VERSIONS := \
 		2.0.1 \
 		2.1.1 \
-		2.2.1 \
-		2.3.0
+		2.2.2 \
+		2.3.1 \
+		2.4.0
 
 ALL_VERSIONS := $(0X_VERSIONS) $(1X_VERSIONS) $(2X_VERSIONS)
 
@@ -89,16 +90,16 @@ example:
 			zookeeper_version='$(ZOOKEEPER_VERSION)' \
 		/docker-compose.yml.erb > examples/$(VERSION)/kafka-cluster/docker-compose.yml
 
-	mkdir -p examples/$(VERSION)/kafka-manager
-	cp env/kafka-cluster.env examples/$(VERSION)/kafka-manager/kafka-cluster.env
-	cp env/zookeeper.env examples/$(VERSION)/kafka-manager/zookeeper.env
-	cp env/kafka-manager.env examples/$(VERSION)/kafka-manager/kafka-manager.env
-	docker run --rm -i -v $(PWD)/docker-compose/docker-compose-kafka-manager.yml.erb:/docker-compose.yml.erb:ro \
+	mkdir -p examples/$(VERSION)/cmak
+	cp env/kafka-cluster.env examples/$(VERSION)/cmak/kafka-cluster.env
+	cp env/zookeeper.env examples/$(VERSION)/cmak/zookeeper.env
+	cp env/cmak.env examples/$(VERSION)/cmak/cmak.env
+	docker run --rm -i -v $(PWD)/docker-compose/docker-compose-cmak.yml.erb:/docker-compose.yml.erb:ro \
 		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
 			zookeeper_version='$(ZOOKEEPER_VERSION)' \
-			kafka_manager_version='$(KAFKA_MANAGER_VERSION)' \
-		/docker-compose.yml.erb > examples/$(VERSION)/kafka-manager/docker-compose.yml
+			cmak_version='$(CMAK_VERSION)' \
+		/docker-compose.yml.erb > examples/$(VERSION)/cmak/docker-compose.yml
 
 example-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \

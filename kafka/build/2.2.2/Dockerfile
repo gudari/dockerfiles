@@ -1,10 +1,10 @@
 FROM gudari/openjdk:8.0.242
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Kafka docker image" Version="2.1.1" Scala_version="2.12"
+LABEL Description="Kafka docker image" Version="2.2.2" Scala_version="2.12"
 
 
-ARG KAFKA_VERSION=2.1.1
+ARG KAFKA_VERSION=2.2.2
 ARG SCALA_VERSION=2.12
 ENV KAFKA_HOME=/opt/kafka
 ENV INIT_DIR=/opt/init
