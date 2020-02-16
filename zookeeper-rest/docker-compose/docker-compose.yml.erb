@@ -1,0 +1,17 @@
+version: "3.7"
+
+services:
+  zookeeper-server:
+    image: gudari/zookeeper:<%= version %>
+    container_name: zookeeper-server
+    hostname: zookeeper-server
+    env_file:
+    - zookeeper.env
+  zookeeper-rest:
+    image: gudari/zookeeper-rest:<%= version %>
+    container_name: zookeeper-rest
+    hostname: zookeeper-rest
+    ports:
+    - "9998:9998"
+    env_file:
+    - zookeeper-rest.env

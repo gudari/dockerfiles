@@ -11,13 +11,7 @@ services:
     image: gudari/zookeeper-rest:3.4.14
     container_name: zookeeper-rest
     hostname: zookeeper-rest
+    ports:
+    - "9998:9998"
     env_file:
     - zookeeper-rest.env
-
-  hoster:
-    image: dvdarias/docker-hoster
-    container_name: hadoop-hoster
-    hostname: hadoop-hoster
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-      - /etc/hosts:/tmp/hosts
