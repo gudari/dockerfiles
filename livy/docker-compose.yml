@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  livy:
+    image: gudari/livy:0.7.0
+    container_name: livy
+    hostname: livy
+    ports:
+    - "8998:8998"

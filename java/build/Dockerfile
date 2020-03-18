@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=debian:10.2-slim
+ARG BASE_IMAGE=debian:10.3-slim
 FROM $BASE_IMAGE
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"

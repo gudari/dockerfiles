@@ -1,0 +1,34 @@
+FROM <%= base_image %>
+
+ARG HBASE_VERSION=<%= version %>
+ENV HBASE_HOME /opt/hbase
+ENV INIT_DIR=/opt/init
+
+LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
+LABEL Description="Hbase docker image" Version="<%= version %>"
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends wget netcat \
+<% if version == '1.4.12' or version == '1.3.6' -%>
+    && wget https://archive.apache.org/dist/hbase/hbase-${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz \
+<% else -%>
+    && wget https://archive.apache.org/dist/hbase/${HBASE_VERSION}/hbase-${HBASE_VERSION}-bin.tar.gz \
+<% end -%>
+    && mkdir -p $HBASE_HOME \
+    && tar -xvzf hbase-${HBASE_VERSION}-bin.tar.gz -C ${HBASE_HOME} --strip-components=1 \
+    && rm -fr hbase-${HBASE_VERSION}-bin.tar.gz \
+    && apt-get remove -y wget \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p ${INIT_DIR}
+
+ENV PATH=${PATH}:${HBASE_HOME}/bin
+
+WORKDIR $HBASE_HOME
+
+COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
+COPY conf $HBASE_HOME/conf
+RUN chmod +x ${INIT_DIR}/bootstrap.sh
+
+CMD ${INIT_DIR}/bootstrap.sh

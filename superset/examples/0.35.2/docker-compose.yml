@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  superset:
+    image: gudari/superset:0.35.2
+    container_name: superset
+    hostname: superset
+    ports:
+    - "8088:8088"
