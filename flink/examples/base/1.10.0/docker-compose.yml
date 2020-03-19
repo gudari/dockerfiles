@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  jobmanager:
+    image: gudari/flink:1.10.0
+    container_name: jobmanager
+    hostname: jobmanager
+    ports:
+    - "8081:8081"
+    env_file:
+      - ./flink.env
+
+  taskmanager:
+    image: gudari/flink:1.10.0
+    container_name: taskmanager
+    hostname: taskmanager
+    depends_on:
+      - jobmanager
+    env_file:
+      - ./flink.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

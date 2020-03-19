@@ -1,0 +1,28 @@
+FROM gudari/openjdk:8.0.242
+
+LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
+LABEL Description="Flink docker image" Version="1.10.0"
+
+ARG FLINK_VERSION=1.10.0
+ARG SCALA_VERSION=2.12
+ENV FLINK_HOME=/opt/flink
+ENV INIT_DIR=/opt/init
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y wget netcat \
+    && wget https://archive.apache.org/dist/flink/flink-${FLINK_VERSION}/flink-${FLINK_VERSION}-bin-scala_${SCALA_VERSION}.tgz \
+    && mkdir -p $FLINK_HOME \
+    && tar -xvzf flink-${FLINK_VERSION}-bin-scala_${SCALA_VERSION}.tgz -C ${FLINK_HOME} --strip-components=1 \
+    && rm -fr flink-${FLINK_VERSION}-bin-scala_${SCALA_VERSION}.tgz \
+    && apt-get remove -y wget \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p ${INIT_DIR}
+
+WORKDIR $FLINK_HOME
+
+COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
+RUN chmod +x ${INIT_DIR}/bootstrap.sh
+
+CMD ${INIT_DIR}/bootstrap.sh
