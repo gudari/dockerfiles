@@ -1,6 +1,6 @@
 FROM gudari/openjdk:8.0.242 AS BUILD
 
-ARG CMAK_VERSION=2.0.0.2
+ARG CMAK_VERSION=3.0.0.4
 ENV CMAK_BUILD_DIR=/tmp/cmak-build
 
 RUN apt-get update \
@@ -21,9 +21,9 @@ RUN apt-get update \
 FROM gudari/openjdk:8.0.242
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="CMAK docker image" Version=2.0.0.2
+LABEL Description="CMAK docker image" Version=3.0.0.4
 
-ARG CMAK_VERSION=2.0.0.2
+ARG CMAK_VERSION=3.0.0.4
 ENV CMAK_HOME=/opt/cmak
 
 RUN mkdir -p ${CMAK_HOME}
