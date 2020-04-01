@@ -18,5 +18,5 @@ steps:
 - bash: |
     export DOCKER_PASSWORD=$(docker_password)
     export DOCKER_USERNAME=$(docker_username)
-    cd $(Build.SourcesDirectory)/zookeeper
+    cd $(Build.SourcesDirectory)/spark
     make release-all
