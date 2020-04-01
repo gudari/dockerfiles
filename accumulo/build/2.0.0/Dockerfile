@@ -1,0 +1,43 @@
+FROM gudari/hadoop:2.7.7
+
+ARG ACCUMULO_VERSION=2.0.0
+ENV ACCUMULO_HOME=/opt/accumulo
+
+ARG ZOOKEEPER_VERSION=3.4.14
+ENV ZOOKEEPER_HOME=/opt/zookeeper
+ENV INIT_DIR=/opt/init
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y wget netcat make gcc g++ \
+    && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
+    && mkdir -p ${ZOOKEEPER_HOME} \
+    && tar xvf zookeeper-${ZOOKEEPER_VERSION}.tar.gz -C ${ZOOKEEPER_HOME} --strip-components=1 \
+    && rm -fr zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
+    && rm -fr $ZOOKEEPER_HOME/src \
+    $ZOOKEEPER_HOME/recipes \
+    $ZOOKEEPER_HOME/docs \
+    $ZOOKEEPER_HOME/contrib \
+    $ZOOKEEPER_HOME/dist-maven \
+    $ZOOKEEPER_HOME/zoopeeker-recipes \
+    $ZOOKEEPER_HOME/zoopeeker-docs \
+    $ZOOKEEPER_HOME/zoopeeker-recipes \
+    $ZOOKEEPER_HOME/zoopeeker-contrib \
+    && wget https://archive.apache.org/dist/accumulo/${ACCUMULO_VERSION}/accumulo-${ACCUMULO_VERSION}-bin.tar.gz \
+    && mkdir -p $ACCUMULO_HOME \
+    && tar -xvzf accumulo-${ACCUMULO_VERSION}-bin.tar.gz -C ${ACCUMULO_HOME} --strip-components=1 \
+    && rm -fr accumulo-${ACCUMULO_VERSION}-bin.tar.gz \
+    && ${ACCUMULO_HOME}/bin/build_native_library.sh \
+    && apt-get remove -y wget \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p ${INIT_DIR}
+
+ENV PATH=${PATH}:${ZOOKEEPER_HOME}/bin:{ACCUMULO_HOME}/bin
+
+WORKDIR $ACCUMULO_HOME
+
+COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
+RUN chmod +x ${INIT_DIR}/bootstrap.sh
+
+CMD ${INIT_DIR}/bootstrap.sh
