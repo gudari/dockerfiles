@@ -1,0 +1,45 @@
+version: "3.5"
+
+services:
+  zookeeper-server:
+    image: gudari/zookeeper:3.4.14
+    container_name: zookeeper-server
+    hostname: zookeeper-server
+    env_file:
+      - zookeeper.env
+
+  nimbus:
+    image: gudari/storm:<%= version %>
+    container_name: nimbus
+    hostname: nimbus
+    env_file:
+      - ./storm.env
+
+  supervisor:
+    image: gudari/storm:<%= version %>
+    container_name: supervisor
+    hostname: supervisor
+    depends_on:
+      - nimbus
+    env_file:
+      - ./storm.env
+
+  ui:
+    image: gudari/storm:<%= version %>
+    container_name: ui
+    hostname: ui
+    ports:
+    - "8080:8080"
+    depends_on:
+      - nimbus
+    env_file:
+      - ./storm.env
+
+  drpc:
+    image: gudari/storm:<%= version %>
+    container_name: drpc
+    hostname: drpc
+    depends_on:
+      - nimbus
+    env_file:
+      - ./storm.env

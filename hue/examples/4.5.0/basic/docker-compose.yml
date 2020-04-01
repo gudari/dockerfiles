@@ -1,0 +1,18 @@
+  
+version: "3.7"
+
+services:
+  hue:
+    image: gudari/hue:4.5.0
+    container_name: hue
+    hostname: hue
+    env_file:
+    - hue.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

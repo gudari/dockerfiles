@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+  zookeeper-server:
+    image: gudari/zookeeper:3.4.14
+    container_name: zookeeper-server
+    hostname: zookeeper-server
+    env_file:
+    - zookeeper.env
+
+  nifi-node-1:
+    image: gudari/nifi:1.10.0
+    container_name: nifi-node-1
+    hostname: nifi-node-1
+    env_file:
+    - nifi.env
+
+  nifi-node-2:
+    image: gudari/nifi:1.10.0
+    container_name: nifi-node-2
+    hostname: nifi-node-2
+    env_file:
+    - nifi.env
+
+  nifi-node-3:
+    image: gudari/nifi:1.10.0
+    container_name: nifi-node-3
+    hostname: nifi-node-3
+    env_file:
+    - nifi.env
+
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

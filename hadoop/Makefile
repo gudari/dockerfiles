@@ -1,15 +1,16 @@
 IMAGE_NAME := gudari/hadoop
-BASE_IMAGE := gudari/java:8u201-b09
+BASE_IMAGE := gudari/openjdk:8.0.242
 BUILD_DATE := `date +"%y.%m.%d"`
 
 2X_VERSIONS := \
 		2.7.7 \
 		2.8.5 \
-		2.9.2
+		2.9.2 \
+		2.10.0
 3X_VERSIONS := \
 		3.0.3 \
-		3.1.2 \
-		3.2.0
+		3.1.3 \
+		3.2.1
 
 ALL_VERSIONS := $(2X_VERSIONS) $(3X_VERSIONS)
 
@@ -69,7 +70,7 @@ example-all:
 			VERSION=$(ver) ; \
 	))
 
-src: dockerfile example
+src: dockerfile example example-hue
 
 src-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \

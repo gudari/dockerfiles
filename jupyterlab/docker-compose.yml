@@ -1,0 +1,71 @@
+version: "3.7"
+
+services:
+  namenode:
+    image: gudari/hadoop:2.7.7
+    container_name: namenode
+    hostname: namenode
+    volumes:
+      - ./data/namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=local
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: gudari/hadoop:2.7.7
+    container_name: datanode
+    hostname: datanode
+    volumes:
+      - ./data/datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+
+  spark-master:
+    image: gudari/spark:2.4.5
+    container_name: spark-master
+    hostname: spark-master
+    environment:
+        SERVICE_PRECONDITION: "namenode:50070"
+    depends_on:
+    - namenode
+    - datanode
+    env_file:
+    - ./spark.env
+    - ./hadoop.env
+
+  spark-worker:
+    image: gudari/spark:2.4.5
+    container_name: spark-worker
+    hostname: spark-worker
+    environment:
+        SERVICE_PRECONDITION: "namenode:50070"
+    depends_on:
+    - namenode
+    - datanode
+    env_file:
+    - ./spark.env
+    - ./hadoop.env
+
+  jupyterlab:
+    image: gudari/jupyterlab:2.0.0
+    container_name: jupyterlab
+    hostname: jupyterlab
+    depends_on:
+    - namenode
+    - datanode
+    env_file:
+    - ./spark.env
+    - ./hadoop.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

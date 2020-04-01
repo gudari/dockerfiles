@@ -5,6 +5,8 @@ services:
     image: gudari/zeppelin:0.8.2
     container_name: zeppelin
     hostname: zeppelin
+    ports:
+    - "8080:8080"
     env_file:
     - zeppelin.env
 

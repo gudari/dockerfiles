@@ -1,0 +1,52 @@
+#!/bin/bash
+
+ZOO_CFG_dataDir=${ZOO_CFG_dataDir:-/var/lib/zookeeper}
+ZOO_MYID=${ZOO_MYID:-1}
+
+function generate_cruisecontrol_properties() {
+  local path=$1
+  cat > $path << EOF
+# This is a zoo.cfg config file created at startup.
+# Start
+# End
+EOF
+}
+
+function addConfiguration() {
+  local path=$1
+  local name=$2
+  local value=$3
+
+  local entry="$name=$value"
+  local escapedEntry=$(echo $entry | sed 's/\//\\\//g')
+  sed -i "/#\ End/ s/.*/${escapedEntry}\n&/" $path
+}
+
+
+function configure() {
+    local path=$1
+    local module=$2
+    local envPrefix=$3
+
+    local var
+    local value
+    
+    echo "Configuring $module"
+    for c in `printenv | grep $envPrefix | sed -e "s/^${envPrefix}_//" -e "s/=.*$//"`; do 
+        name=`echo ${c} | sed -e "s/___/-/g" -e "s/__/@/g" -e "s/_/./g" -e "s/@/_/g"`
+        var="${envPrefix}_${c}"
+        value=${!var}
+        echo " - Setting $name=$value"
+        addConfiguration $path $name "$value"
+    done
+}
+
+generate_zoo_cfg $CRUISE_CONTROL_HOME/config/cruisecontrol.properties
+configure $CRUISE_CONTROL_HOME/config/cruisecontrol.properties cruisecontrol CRUISECONTROL_PROPERTIES
+
+#debug
+cat $CRUISE_CONTROL_HOME/config/cruisecontrol.properties
+
+if [[ "${HOSTNAME}" =~ "cruise-control" ]]; then
+  $CRUISE_CONTROL_HOME/kafka-cruise-control-start.sh $CRUISE_CONTROL_HOME/config/cruisecontrol.properties
+fi

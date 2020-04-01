@@ -1,0 +1,126 @@
+version: "3.5"
+
+services:
+  zookeeper-server:
+    image: zookeeper:3.4.14
+    container_name: zookeeper-server
+    hostname: zookeeper-server
+    networks:
+      - docker.local
+
+  hadoop-namenode:
+    image: gudari/hadoop:2.7.7
+    container_name: hadoop-namenode
+    hostname: hadoop-namenode
+    environment:
+      - CLUSTER_NAME=local
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+  hadoop-datanode:
+    image: gudari/hadoop:2.7.7
+    container_name: hadoop-datanode
+    hostname: hadoop-datanode
+    depends_on:
+      - hadoop-namenode
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+  hbase-master:
+    image: gudari/hbase:1.2.12
+    container_name: hbase-master
+    hostname: hbase-master
+    ports:
+    - "16010:16010"
+    env_file:
+      - ./hbase.env
+    environment:
+      SERVICE_PRECONDITION: "hadoop-namenode:50070 hadoop-datanode:50075 zookeeper-server:2181"
+    networks:
+      - docker.local
+
+  hbase-regionserver:
+    image: gudari/hbase:1.2.12
+    container_name: hbase-regionserver
+    hostname: hbase-regionserver
+    env_file:
+      - ./hbase.env
+    environment:
+      HBASE_CONF_hbase_regionserver_hostname: hbase-regionserver
+      SERVICE_PRECONDITION: "hadoop-namenode:50070 hadoop-datanode:50075 zookeeper-server:2181 hbase-master:16010"
+    networks:
+      - docker.local
+
+  hive-metastore-mysql:
+    image: mysql:5.6.40
+    env_file:
+      - ./mysql.env
+    container_name: hive-metastore-mysql
+    hostname: hive-metastore-mysql
+    networks:
+      - docker.local
+
+  hive-metastore:
+    image: gudari/hive:1.2.2
+    env_file:
+      - ./hive.env
+      - ./hadoop.env
+    container_name: hive-metastore
+    hostname: hive-metastore
+    environment:
+      SERVICE_PRECONDITION: "hadoop-namenode:50070 hadoop-datanode:50075 hive-metastore-mysql:3306"
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+      - hive-metastore-mysql
+    networks:
+      - docker.local
+
+  hive-hiveserver2:
+    image: gudari/hive:1.2.2
+    env_file:
+      - ./hive.env
+      - ./hadoop.env
+    container_name: hive-hiveserver2
+    hostname: hive-hiveserver2
+    environment:
+      SERVICE_PRECONDITION: "hadoop-namenode:50070 hadoop-datanode:50075 hive-metastore-mysql:3306 hive-metastore:9083"
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+      - hive-metastore-mysql
+      - hive-metastore
+    networks:
+      - docker.local
+
+  kylin-server:
+    image: gudari/kylin:2.4.1
+    env_file:
+      - ./hive.env
+      - ./hadoop.env
+      - ./hbase.env
+      - ./kylin.env
+    container_name: kylin-server
+    hostname: kylin-server
+    ports:
+    - "7070:7070"
+    environment:
+      SERVICE_PRECONDITION: "hadoop-namenode:50070 hadoop-datanode:50075 hbase-master:16010 hbase-regionserver:16030 hive-metastore-mysql:3306 hive-metastore:9083"
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+      - hive-metastore-mysql
+      - hive-metastore
+      - hbase-master
+      - hbase-regionserver
+    networks:
+      - docker.local
+
+networks:
+  docker.local:
+    driver: bridge
+    name: docker.local

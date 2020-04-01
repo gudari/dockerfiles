@@ -20,6 +20,8 @@ services:
     image: gudari/zkui:<%= zkui_version %>
     container_name: zkui
     hostname: zkui
+    ports:
+    - "9090:9090"
     env_file:
     - zkui.env
 

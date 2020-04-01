@@ -1,0 +1,3 @@
+findspark
+pyelasticsearch
+kafka-python

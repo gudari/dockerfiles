@@ -1,0 +1,89 @@
+version: "3"
+
+services:
+  zookeeper-server:
+    image: gudari/zookeeper:3.4.14
+    container_name: zookeeper-server
+    hostname: zookeeper-server
+    env_file:
+      - ./zookeeper.env
+
+  namenode:
+    image: gudari/hadoop:2.7.7
+    container_name: namenode
+    hostname: namenode
+    ports:
+    - "50070:50070"
+    environment:
+      CLUSTER_NAME: "local"
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: gudari/hadoop:2.7.7
+    container_name: datanode
+    hostname: datanode
+    ports:
+    - "50075:50075"
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+
+  resourcemanager:
+    image: gudari/hadoop:2.7.7
+    container_name: resourcemanager
+    hostname: resourcemanager
+    ports:
+    - "8088:8088"
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
+    depends_on:
+      - namenode
+      - datanode
+    env_file:
+      - ./hadoop.env
+
+  nodemanager:
+    image: gudari/hadoop:2.7.7
+    container_name: nodemanager
+    hostname: nodemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+      - resourcemanager
+    env_file:
+      - ./hadoop.env
+
+  hbasemaster:
+    image: gudari/hbase:1.3.6
+    container_name: hbasemaster
+    hostname: hbasemaster
+    ports:
+    - "16010:16010"
+    env_file:
+      - ./hbase.env
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 zookeeper-server:2181"
+
+  hbaseregionserver:
+    image: gudari/hbase:1.3.6
+    container_name: hbaseregionserver
+    hostname: hbaseregionserver
+    env_file:
+      - ./hbase.env
+    environment:
+      HBASE_CONF_hbase_regionserver_hostname: hbaseregionserver
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 zookeeper-server:2181 hbasemaster:16010"
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

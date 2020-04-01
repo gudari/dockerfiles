@@ -1,17 +1,17 @@
-trigger:
-  branches:
-    include:
-    - master
-  paths:
-    include:
-    - zookeeper/Makefile
-    - zookeeper/scripts/*
-    - zookeeper/build/*
+#trigger:
+#  branches:
+#    include:
+#    - master
+#  paths:
+#    include:
+#    - zookeeper/Makefile
+#    - zookeeper/scripts/*
+#    - zookeeper/build/*
 
 pr: none
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  vmImage: 'ubuntu-18.04'
 
 steps:
 - bash: |
