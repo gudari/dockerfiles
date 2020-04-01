@@ -3,7 +3,7 @@ set -ex
 # docker hub username
 USERNAME=gudari
 # image name
-IMAGE=zeppelin
+IMAGE=jupyterlab
 
 version=`cat VERSION`
 buildDate=`date +"%y.%m.%d"`
