@@ -1,13 +1,13 @@
-trigger: none
-#  branches:
-#    include:
-#    - master
-#  paths:
-#    include:
-#    - zookeeper-rest/Makefile*
-#    - zookeeper-rest/scripts/*
-#    - zookeeper-rest/build/*
-#    - zookeeper-rest/dockerfile/*
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - zookeeper-rest/Makefile*
+    - zookeeper-rest/scripts/*
+    - zookeeper-rest/build/*
+    - zookeeper-rest/dockerfile/*
 
 pr: none
 

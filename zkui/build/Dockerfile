@@ -6,9 +6,9 @@ ENV ZKUI_BUILD_PATH=/opt/zkui-build
 RUN buildDep="git maven" \
     && apt-get update \
     && apt-get install --no-install-recommends -y $buildDep \
-    git clone https://github.com/DeemOpen/zkui.git ${ZKUI_BUILD_PATH} && \
-    cd ${ZKUI_BUILD_PATH} && \
-    mvn clean install
+    && git clone https://github.com/DeemOpen/zkui.git ${ZKUI_BUILD_PATH} \
+    && cd ${ZKUI_BUILD_PATH} \
+    && mvn clean install
 
 FROM gudari/openjdk:8.0.242
 
