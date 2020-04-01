@@ -1,0 +1,22 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - jupyterlab/build/*
+
+pr: none
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+steps:
+- bash: |
+    cd $(Build.SourcesDirectory)/jupyterlab/build
+    ./build.sh
+- bash: |
+    export DOCKER_PASSWORD=$(docker_password)
+    export DOCKER_USERNAME=$(docker_username)
+    cd $(Build.SourcesDirectory)/jupyterlab/build
+    ./push.sh
