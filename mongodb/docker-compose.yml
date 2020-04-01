@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  mongodb:
+    image: gudari/mongodb:4.2.5
+    container_name: mongodb
+    hostname: mongodb
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
