@@ -1,9 +1,9 @@
-FROM gudari/openjdk:8.0.242 AS BUILD
+FROM gudari/maven:3.6.3 AS BUILD
 
 ARG ZKUI_VERSION=2.0-SNAPSHOT
 ENV ZKUI_BUILD_PATH=/opt/zkui-build
 
-RUN buildDep="git maven" \
+RUN buildDep="git" \
     && apt-get update \
     && apt-get install --no-install-recommends -y $buildDep \
     && git clone https://github.com/DeemOpen/zkui.git ${ZKUI_BUILD_PATH} \
