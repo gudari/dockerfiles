@@ -16,5 +16,5 @@ steps:
 - bash: |
     export DOCKER_PASSWORD=$(docker_password)
     export DOCKER_USERNAME=$(docker_username)
-    cd $(Build.SourcesDirectory)/kafka
+    cd $(Build.SourcesDirectory)/java
     make release-all
