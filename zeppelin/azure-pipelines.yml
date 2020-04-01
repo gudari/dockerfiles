@@ -1,10 +1,10 @@
-trigger: none
-#  branches:
-#    include:
-#    - master
-#  paths:
-#    include:
-#    - zeppelin/build/*
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - zeppelin/build/*
 
 pr: none
 
