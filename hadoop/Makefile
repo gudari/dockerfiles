@@ -4,8 +4,6 @@ BUILD_DATE := `date +"%y.%m.%d"`
 
 2X_VERSIONS := \
 		2.7.7 \
-		2.8.5 \
-		2.9.2 \
 		2.10.0
 3X_VERSIONS := \
 		3.0.3 \

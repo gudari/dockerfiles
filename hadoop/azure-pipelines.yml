@@ -1,12 +1,12 @@
-trigger: none
-#  branches:
-#    include:
-#    - master
-#  paths:
-#    include:
-#    - hadoop/Makefile
-#    - hadoop/scripts/*
-#    - hadoop/build/*
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - hadoop/Makefile
+    - hadoop/scripts/*
+    - hadoop/build/*
 
 pr: none
 
