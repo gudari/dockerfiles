@@ -9,7 +9,7 @@ trigger:
 pr: none
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  vmImage: 'ubuntu-18.04'
 
 steps:
 - bash: |
