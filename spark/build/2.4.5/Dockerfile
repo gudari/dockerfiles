@@ -8,7 +8,7 @@ ENV SPARK_HOME=/opt/spark
 ENV INIT_DIR=/opt/init
 
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y wget netcat procps python r-base \
+    && apt-get install --no-install-recommends -y wget netcat procps python3 r-base \
     && wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-without-hadoop.tgz \
     && mkdir -p $SPARK_HOME \
     && tar -xvzf spark-${SPARK_VERSION}-bin-without-hadoop.tgz -C ${SPARK_HOME} --strip-components=1 \
@@ -18,6 +18,8 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p ${INIT_DIR}
+
+ENV PYSPARK_PYTHON=python3
 
 ENV PATH=${PATH}:${SPARK_HOME}/bin
 

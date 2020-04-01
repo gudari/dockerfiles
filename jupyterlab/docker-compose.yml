@@ -5,8 +5,6 @@ services:
     image: gudari/hadoop:2.7.7
     container_name: namenode
     hostname: namenode
-    ports:
-    - "50070:50070"
     volumes:
       - ./data/namenode:/hadoop/dfs/name
     environment:
@@ -31,8 +29,6 @@ services:
     image: gudari/spark:2.4.5
     container_name: spark-master
     hostname: spark-master
-    ports:
-    - "8080:8080"
     environment:
         SERVICE_PRECONDITION: "namenode:50070"
     depends_on:
@@ -46,8 +42,6 @@ services:
     image: gudari/spark:2.4.5
     container_name: spark-worker
     hostname: spark-worker
-    ports:
-    - "8081:8081"
     environment:
         SERVICE_PRECONDITION: "namenode:50070"
     depends_on:
@@ -61,12 +55,17 @@ services:
     image: gudari/jupyterlab:2.0.0
     container_name: jupyterlab
     hostname: jupyterlab
-    ports:
-    - "8888:8888"
-    - "4040:4040"
     depends_on:
     - namenode
     - datanode
     env_file:
     - ./spark.env
     - ./hadoop.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
