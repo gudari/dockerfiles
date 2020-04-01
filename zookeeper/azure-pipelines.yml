@@ -1,12 +1,12 @@
-trigger:
-  branches:
-    include:
-    - master
-  paths:
-    include:
-    - zookeeper/Makefile
-    - zookeeper/scripts/*
-    - zookeeper/build/*
+#trigger:
+#  branches:
+#    include:
+#    - master
+#  paths:
+#    include:
+#    - zookeeper/Makefile
+#    - zookeeper/scripts/*
+#    - zookeeper/build/*
 
 pr: none
 
