@@ -106,7 +106,7 @@ push-all:
 release: build push
 
 release-all:
-	(set -e ; $(foreach ver,$(0X_VERSIONS) $(1X_VERSIONS), \
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make release \
 			VERSION=$(ver) ; \
 	))

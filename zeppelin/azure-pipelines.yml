@@ -1,4 +1,4 @@
-#trigger:
+trigger: none
 #  branches:
 #    include:
 #    - master
