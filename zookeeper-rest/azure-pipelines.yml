@@ -4,7 +4,7 @@ trigger:
     - master
   paths:
     include:
-    - zookeeper-rest/Makefile*
+    - zookeeper-rest/Makefile
     - zookeeper-rest/scripts/*
     - zookeeper-rest/build/*
     - zookeeper-rest/dockerfile/*
