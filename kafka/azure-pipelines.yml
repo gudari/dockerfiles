@@ -1,12 +1,12 @@
-#trigger:
-#  branches:
-#    include:
-#    - master
-#  paths:
-#    include:
-#    - kafka/Makefile
-#    - kafka/scripts/*
-#    - kafka/build/*
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - kafka/Makefile
+    - kafka/scripts/*
+    - kafka/build/*
 
 pr: none
 
