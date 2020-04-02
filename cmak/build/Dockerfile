@@ -1,4 +1,4 @@
-FROM gudari/openjdk:8.0.242 AS BUILD
+FROM gudari/openjdk:11.0.6 AS BUILD
 
 ARG CMAK_VERSION=3.0.0.4
 ENV CMAK_BUILD_DIR=/tmp/cmak-build
@@ -16,9 +16,9 @@ RUN ./sbt clean dist
 WORKDIR ${CMAK_BUILD_DIR}/target/universal
 RUN apt-get update \
     && apt-get install --no-install-recommends -y unzip \
-    && unzip kafka-manager-${CMAK_VERSION}.zip
+    && unzip cmak-${CMAK_VERSION}.zip
 
-FROM gudari/openjdk:8.0.242
+FROM gudari/openjdk:11.0.6
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="CMAK docker image" Version=3.0.0.4
@@ -28,6 +28,6 @@ ENV CMAK_HOME=/opt/cmak
 
 RUN mkdir -p ${CMAK_HOME}
 WORKDIR ${CMAK_HOME}
-COPY --from=BUILD /tmp/cmak-build/target/universal/kafka-manager-${CMAK_VERSION} .
+COPY --from=BUILD /tmp/cmak-build/target/universal/cmak-${CMAK_VERSION} .
 
-CMD bin/kafka-manager -Dconfig.file=${CMAK_HOME}/conf/application.conf
+CMD bin/cmak -Dconfig.file=${CMAK_HOME}/conf/application.conf

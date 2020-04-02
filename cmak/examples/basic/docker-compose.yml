@@ -2,19 +2,19 @@ version: "3.7"
 
 services:
   zookeeper-server:
-    image: gudari/zookeeper:3.4.14
+    image: gudari/zookeeper:3.5.6
     container_name: zookeeper-server
     hostname: zookeeper-server
     env_file:
     - zookeeper.env
   kafka-broker:
-    image: gudari/kafka:2.2.0
+    image: gudari/kafka:2.4.0
     container_name: kafka-broker
     hostname: kafka-broker
     env_file:
     - kafka.env
   cmak:
-    image: gudari/cmak:2.0.0.2
+    image: gudari/cmak:3.0.0.4
     container_name: cmak
     hostname: cmak
     ports:
