@@ -20,7 +20,6 @@ RUN apt-get update \
     && mkdir -p ${INIT_DIR}
 
 ENV PYSPARK_PYTHON=python3
-
 ENV PATH=${PATH}:${SPARK_HOME}/bin
 
 WORKDIR $SPARK_HOME
