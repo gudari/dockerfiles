@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export CORE_CONF_fs_defaultFS=${CORE_CONF_fs_defaultFS:-hdfs://`hostname -f`:8020}
+export SPARK_DEFAULT_CONF_spark_jars=${SPARK_DEFAULT_CONF_spark_jars}${SPARK_DEFAULT_CONF_spark_jars:+,}$JUPYTERLAB_LIB/elasticsearch-hadoop-mr-7.6.1.jar,$JUPYTERLAB_LIB/mongo-java-driver-3.10.2.jar,$JUPYTERLAB_LIB/mongo-spark-connector_2.11-2.4.1.jar,$JUPYTERLAB_LIB/mongo-spark-connector_2.11-2.4.1.jar,$JUPYTERLAB_LIB/spark-streaming-kafka-0-8-assembly_2.11-2.4.5.jar}
 
 function wait_for_it()
 {

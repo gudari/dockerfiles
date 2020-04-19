@@ -1,3 +1,5 @@
 findspark
 pyelasticsearch
 kafka-python
+pymongo
+bson
