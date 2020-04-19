@@ -1,17 +1,23 @@
-FROM gudari/zulu8jdk:8.0.192
+FROM gudari/openjdk:8.0.242
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Hadoop docker image" Version="3.2.1"
 
 ARG HADOOP_VERSION=3.2.1
 ENV HADOOP_HOME=/opt/hadoop
+ENV INIT_DIR=/opt/init
 
-RUN wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
-    mkdir $HADOOP_HOME && \
-    tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 && \
-    rm -fr hadoop-${HADOOP_VERSION}.tar.gz && \
-    apk add --no-cache bash && \
-    mkdir -p /opt/init
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y wget netcat \
+    && wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
+    && mkdir -p $HADOOP_HOME \
+    && tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 \
+    && rm -fr hadoop-${HADOOP_VERSION}.tar.gz \
+    && apt-get remove -y wget \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p ${INIT_DIR}
 
 ENV HADOOP_PREFIX=${HADOOP_HOME} \
     HADOOP_COMMON_HOME=${HADOOP_HOME} \
@@ -24,7 +30,7 @@ ENV HADOOP_PREFIX=${HADOOP_HOME} \
 
 WORKDIR $HADOOP_PREFIX
 
-COPY scripts/bootstrap.sh /opt/init/bootstrap.sh
-RUN chmod +x /opt/init/bootstrap.sh
+COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
+RUN chmod +x ${INIT_DIR}/bootstrap.sh
 
-CMD /opt/init/bootstrap.sh
+CMD ${INIT_DIR}/bootstrap.sh

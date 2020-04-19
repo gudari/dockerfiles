@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   namenode:
-    image: gudari/hadoop:3.0.3
+    image: gudari/hadoop:2.10.0
     container_name: namenode
     hostname: namenode
     ports:
@@ -15,7 +15,7 @@ services:
       - ./hadoop.env
 
   datanode:
-    image: gudari/hadoop:3.0.3
+    image: gudari/hadoop:2.10.0
     container_name: datanode
     hostname: datanode
     volumes:
@@ -28,7 +28,7 @@ services:
       - ./hadoop.env
 
   resourcemanager:
-    image: gudari/hadoop:3.0.3
+    image: gudari/hadoop:2.10.0
     container_name: resourcemanager
     hostname: resourcemanager
     environment:
@@ -40,7 +40,7 @@ services:
       - ./hadoop.env
 
   nodemanager:
-    image: gudari/hadoop:3.0.3
+    image: gudari/hadoop:2.10.0
     container_name: nodemanager
     hostname: nodemanager
     environment:
@@ -53,7 +53,7 @@ services:
       - ./hadoop.env
 
   historyserver:
-    image: gudari/hadoop:3.0.3
+    image: gudari/hadoop:2.10.0
     container_name: historyserver
     hostname: historyserver
     environment:

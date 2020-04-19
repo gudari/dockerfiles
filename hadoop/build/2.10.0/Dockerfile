@@ -1,9 +1,9 @@
 FROM gudari/openjdk:8.0.242
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Hadoop docker image" Version="3.0.3"
+LABEL Description="Hadoop docker image" Version="2.10.0"
 
-ARG HADOOP_VERSION=3.0.3
+ARG HADOOP_VERSION=2.10.0
 ENV HADOOP_HOME=/opt/hadoop
 ENV INIT_DIR=/opt/init
 
