@@ -1,15 +1,18 @@
 IMAGE_NAME := gudari/hue
 BASE_IMAGE := gudari/maven:3.6.3
 BUILD_DATE := `date +"%y.%m.%d"`
+HADOOP_VERSION := 3.2.1
 
 ALL_VERSIONS := \
-		4.6.0 \
 		4.5.0 \
-		4.4.0
+		4.6.0 \
+		4.7.0
 
 dockerfile:
 	mkdir -p build/$(VERSION)/scripts
-	cp scripts/bootstrap.sh build/$(VERSION)/scripts/bootstrap.sh
+	mkdir -p build/$(VERSION)/templates
+	cp scripts/* build/$(VERSION)/scripts/
+	cp templates/hue.ini.$(VERSION).template build/$(VERSION)/templates/hue.ini.template
 	docker run --rm -i -v $(PWD)/Dockerfile.template.erb:/Dockerfile.erb:ro \
 		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
@@ -30,13 +33,27 @@ example:
 			version='$(VERSION)' \
 		/docker-compose.yml.erb > examples/$(VERSION)/basic/docker-compose.yml
 
+example-hadoop:
+	mkdir -p examples/$(VERSION)/hadoop
+	cp env/hue.env examples/$(VERSION)/hadoop/hue.env
+	cp env/hadoop.env examples/$(VERSION)/hadoop/hadoop.env
+	docker run --rm -i -v $(PWD)/docker-compose/docker-compose.hadoop.yml.erb:/docker-compose.yml.erb:ro \
+		ruby:alpine erb -U -T - \
+			version='$(VERSION)' \
+			hadoop_version='$(HADOOP_VERSION)' \
+		/docker-compose.yml.erb > examples/$(VERSION)/hadoop/docker-compose.yml
+
 example-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make example \
 			VERSION=$(ver) ; \
 	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make example-hadoop \
+			VERSION=$(ver) ; \
+	))
 
-src: dockerfile example
+src: dockerfile example example-hadoop
 
 src-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \

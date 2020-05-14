@@ -1,58 +1,43 @@
 #!/bin/bash
 
-function generate_hue_ini() {
-  local path=$1
-  cat > $path << EOF
-# Hue configuration file
-# ===================================
-#
-# For complete documentation about the contents of this file, run
-#   $ <hue_root>/build/env/bin/hue config_help
-#
-# All .ini files under the current directory are treated equally.  Their
-# contents are merged to form the Hue configuration, which can
-# can be viewed on the Hue at
-#   http://<hue_host>:<port>/dump_config
-# Start
-# End
-EOF
-}
+function wait_for_it()
+{
+    local serviceport=$1
+    local service=${serviceport%%:*}
+    local port=${serviceport#*:}
+    local retry_seconds=5
+    local max_try=100
+    let i=1
 
-function addProperty() {
-  local path=$1
-  local name=$2
-  local value=$3
+    nc -z $service $port
+    result=$?
 
-  local entry="$name=$value"
-  local escapedEntry=$(echo $entry | sed 's/\//\\\//g')
-  sed -i "/#\ End/ s/.*/${escapedEntry}\n&/" $path
-}
+    until [ $result -eq 0 ]; do
+      echo "[$i/$max_try] check for ${service}:${port}..."
+      echo "[$i/$max_try] ${service}:${port} is not available yet"
+      if (( $i == $max_try )); then
+        echo "[$i/$max_try] ${service}:${port} is still not available; giving up after ${max_try} tries. :/"
+        exit 1
+      fi
+      
+      echo "[$i/$max_try] try in ${retry_seconds}s once again ..."
+      let "i++"
+      sleep $retry_seconds
 
-function configure() {
-    local path=$1
-    local module=$2
-    local envPrefix=$3
-
-    local var
-    local value
-    
-    echo "Configuring $module"
-    for c in `printenv | grep $envPrefix | sed -e "s/^${envPrefix}_//" -e "s/=.*$//"`; do 
-        name=`echo ${c} | sed -e "s/___/-/g" -e "s/__/@/g" -e "s/_/./g" -e "s/@/_/g"`
-        var="${envPrefix}_${c}"
-        value=${!var}
-        echo " - Setting $name=$value"
-        addProperty $path $name "$value"
+      nc -z $service $port
+      result=$?
     done
+    echo "[$i/$max_try] $service:${port} is available."
 }
 
-#generate_hue_ini $HUE_HOME/desktop/conf/hue.ini
-#configure $HUE_HOME/desktop/conf/hue.ini hue HUE_INI
+mkdir -p $HUE_HOME/desktop/conf
 
-#generate_hue_ini hue.ini
-#configure hue.ini hue HUE_INI
-#python /opt/init/generate_hue_ini_file.py /opt/hue/desktop/conf/hue.ini
-#rm -fr /opt/hue/desktop/conf/pseudo-distributed.ini.tmpl
-#rm -fr /opt/hue/desktop/conf/pseudo-distributed.ini
+rm -fr /opt/hue/desktop/conf/*
+/opt/init/fill_template.py /opt/templates/hue.ini.template /opt/hue/desktop/conf/hue.ini HUE_INI
 
-build/env/bin/supervisor
+for i in ${SERVICE_PRECONDITION[@]}
+do
+    wait_for_it ${i}
+done
+
+$HUE_HOME/build/env/bin/supervisor

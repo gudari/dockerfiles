@@ -22,7 +22,7 @@
 
   # Set this to a random string, the longer the better.
   # This is used for secure hashing in the session store.
-  secret_key=
+  secret_key=$(desktop_secret_key)
 
   # Execute this script to produce the Django secret key. This will be used when
   # 'secret_key' is not set.
@@ -192,7 +192,7 @@
 
   # Comma separated list of apps to not load at server startup.
   # e.g.: pig,zookeeper
-  ## app_blacklist=
+  app_blacklist=$(desktop_app_blacklist)
 
   # Id of the cluster where Hue is located.
   ## cluster_id='default'
@@ -1061,7 +1061,8 @@
 
     [[[default]]]
       # Enter the filesystem uri
-      fs_defaultfs=hdfs://localhost:8020
+      #fs_defaultfs=hdfs://localhost:8020
+      fs_defaultfs=$(hadoop_default_fs_defaultfs)
 
       # NameNode logical name.
       ## logical_name=
@@ -1070,6 +1071,7 @@
       # Domain should be the NameNode or HttpFs host.
       # Default port is 14000 for HttpFs.
       ## webhdfs_url=http://localhost:50070/webhdfs/v1
+      webhdfs_url=$(hadoop_default_webhdfs_url)
 
       # Change this if your HDFS cluster is Kerberos-secured
       ## security_enabled=false
@@ -1087,10 +1089,10 @@
 
     [[[default]]]
       # Enter the host on which you are running the ResourceManager
-      ## resourcemanager_host=localhost
+      resourcemanager_host=$(hadoop_default_resourcemanager_host)
 
       # The port where the ResourceManager IPC listens on
-      ## resourcemanager_port=8032
+      resourcemanager_port=8032
 
       # Whether to submit jobs to this cluster
       submit_to=True
@@ -1102,13 +1104,13 @@
       ## security_enabled=false
 
       # URL of the ResourceManager API
-      ## resourcemanager_api_url=http://localhost:8088
+      resourcemanager_api_url=$(hadoop_default_resourcemanager_api_url)
 
       # URL of the ProxyServer API
-      ## proxy_api_url=http://localhost:8088
+      proxy_api_url=$(hadoop_default_proxy_api_url)
 
       # URL of the HistoryServer API
-      ## history_server_api_url=http://localhost:19888
+      history_server_api_url=$(hadoop_default_history_server_api_url)
 
       # URL of the Spark History Server
       ## spark_history_server_url=http://localhost:18088
