@@ -8,7 +8,7 @@ services:
     ports:
     - "50070:50070"
     volumes:
-      - ./data/namenode:/hadoop/dfs/name
+      - ./storage/namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=local
     env_file:
@@ -19,7 +19,7 @@ services:
     container_name: datanode
     hostname: datanode
     volumes:
-      - ./data/datanode:/hadoop/dfs/data
+      - ./storage/datanode:/hadoop/dfs/data
     environment:
       SERVICE_PRECONDITION: "namenode:50070"
     depends_on:
@@ -57,10 +57,24 @@ services:
     container_name: historyserver
     hostname: historyserver
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
     depends_on:
       - namenode
       - datanode
+      - resourcemanager
+    env_file:
+      - ./hadoop.env
+
+  timelineserver:
+    image: gudari/hadoop:2.7.7
+    container_name: timelineserver
+    hostname: timelineserver
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+      - resourcemanager
     env_file:
       - ./hadoop.env
 

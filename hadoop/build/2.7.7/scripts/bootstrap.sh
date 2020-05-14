@@ -229,15 +229,17 @@ if [[ "${HOSTNAME}" =~ "datanode" ]]; then
 fi
 
 if [[ "${HOSTNAME}" =~ "resourcemanager" ]]; then
-  sleep 30
   $HADOOP_PREFIX/bin/yarn --config $HADOOP_CONF_DIR resourcemanager
 fi
 
 if [[ "${HOSTNAME}" =~ "nodemanager" ]]; then
-  sleep 30
   $HADOOP_PREFIX/bin/yarn --config $HADOOP_CONF_DIR nodemanager
 fi
 
 if [[ "${HOSTNAME}" =~ "historyserver" ]]; then
   $HADOOP_PREFIX/bin/mapred --config $HADOOP_CONF_DIR historyserver
+fi
+
+if [[ "${HOSTNAME}" =~ "timelineserver" ]]; then
+  $HADOOP_PREFIX/bin/yarn --config $HADOOP_CONF_DIR timelineserver
 fi

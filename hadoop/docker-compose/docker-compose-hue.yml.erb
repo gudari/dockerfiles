@@ -6,7 +6,7 @@ services:
     container_name: namenode
     hostname: namenode
     volumes:
-      - ./data/namenode:/hadoop/dfs/name
+      - ./storage/namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=local
     env_file:
@@ -17,9 +17,9 @@ services:
     container_name: datanode
     hostname: datanode
     volumes:
-      - ./data/datanode:/hadoop/dfs/data
+      - ./storage/datanode:/hadoop/dfs/data
     environment:
-<% if version == '2.7.7' || version == '2.8.5' || version == '2.9.2' -%>
+<% if version =~ /^2\./ -%>
       SERVICE_PRECONDITION: "namenode:50070"
 <% else -%>
       SERVICE_PRECONDITION: "namenode:9870"
@@ -34,7 +34,7 @@ services:
     container_name: resourcemanager
     hostname: resourcemanager
     environment:
-<% if version == '2.7.7' || version == '2.8.5' || version == '2.9.2' -%>
+<% if version =~ /^2\./ -%>
       SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
 <% else -%>
       SERVICE_PRECONDITION: "namenode:9870 datanode:9864"
@@ -50,7 +50,7 @@ services:
     container_name: nodemanager
     hostname: nodemanager
     environment:
-<% if version == '2.7.7' || version == '2.8.5' || version == '2.9.2' -%>
+<% if version =~ /^2\./ -%>
       SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
 <% else -%>
       SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
@@ -67,22 +67,43 @@ services:
     container_name: historyserver
     hostname: historyserver
     environment:
-<% if version == '2.7.7' || version == '2.8.5' || version == '2.9.2' -%>
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
+<% if version =~ /^2./ -%>
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
 <% else -%>
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864"
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
 <% end -%>
     depends_on:
       - namenode
       - datanode
     env_file:
       - ./hadoop.env
+
+  timelineserver:
+    image: gudari/hadoop:<%= version %>
+    container_name: timelineserver
+    hostname: timelineserver
+    environment:
+<% if version =~ /^2\./ -%>
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+<% else -%>
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+<% end -%>
+    depends_on:
+      - namenode
+      - datanode
+    env_file:
+      - ./hadoop.env
+
   hue:
-    image: gudari/hue:4.4.0
+    image: gudari/hue:4.7.0
     container_name: hue
     hostname: hue
     environment:
-      SERVICE_PRECONDITION: "namenode:50070"
+<% if version =~ /^2\./ -%>
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+<% else -%>
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+<% end -%>
     env_file:
       - ./hue.env
 
