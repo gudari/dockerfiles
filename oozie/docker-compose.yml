@@ -1,9 +1,0 @@
-version: "3.7"
-
-services:
-  oozie:
-    image: gudari/oozie:5.2.0
-    container_name: oozie
-    hostname: oozie
-    ports:
-    - "11000:11000"
