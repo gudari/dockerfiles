@@ -14,21 +14,21 @@ pool:
   vmImage: 'ubuntu-18.04'
 
 jobs:
-- job: build 4.5.0
+- job: build_4_5_0
   steps:
   - bash: |
       export DOCKER_PASSWORD=$(docker_password)
       export DOCKER_USERNAME=$(docker_username)
       cd $(Build.SourcesDirectory)/hue
       make release VERSION=4.5.0
-- job: build 4.6.0
+- job: build_4_6_0
   steps:
   - bash: |
       export DOCKER_PASSWORD=$(docker_password)
       export DOCKER_USERNAME=$(docker_username)
       cd $(Build.SourcesDirectory)/hue
       make release VERSION=4.6.0
-- job: build 4.7.0
+- job: build_4_7_0
   steps:
   - bash: |
       export DOCKER_PASSWORD=$(docker_password)
