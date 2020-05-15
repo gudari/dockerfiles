@@ -229,17 +229,49 @@ if [[ "${HOSTNAME}" =~ "datanode" ]]; then
 fi
 
 if [[ "${HOSTNAME}" =~ "resourcemanager" ]]; then
+
+  hdfs_status=`hdfs dfsadmin -safemode get`
+  while [[ $hdfs_status == *"ON"* ]]; do
+    sleep 5
+    hdfs_status=`hdfs dfsadmin -safemode get`
+    echo "HDFS status in safe mode!!!!"
+  done
+
   $HADOOP_PREFIX/bin/yarn --config $HADOOP_CONF_DIR resourcemanager
 fi
 
 if [[ "${HOSTNAME}" =~ "nodemanager" ]]; then
+
+  hdfs_status=`hdfs dfsadmin -safemode get`
+  while [[ $hdfs_status == *"ON"* ]]; do
+    sleep 5
+    hdfs_status=`hdfs dfsadmin -safemode get`
+    echo "HDFS status in safe mode!!!!"
+  done
+
   $HADOOP_PREFIX/bin/yarn --config $HADOOP_CONF_DIR nodemanager
 fi
 
 if [[ "${HOSTNAME}" =~ "historyserver" ]]; then
+
+  hdfs_status=`hdfs dfsadmin -safemode get`
+  while [[ $hdfs_status == *"ON"* ]]; do
+    sleep 5
+    hdfs_status=`hdfs dfsadmin -safemode get`
+    echo "HDFS status in safe mode!!!!"
+  done
+
   $HADOOP_PREFIX/bin/mapred --config $HADOOP_CONF_DIR historyserver
 fi
 
 if [[ "${HOSTNAME}" =~ "timelineserver" ]]; then
+
+  hdfs_status=`hdfs dfsadmin -safemode get`
+  while [[ $hdfs_status == *"ON"* ]]; do
+    sleep 5
+    hdfs_status=`hdfs dfsadmin -safemode get`
+    echo "HDFS status in safe mode!!!!"
+  done
+
   $HADOOP_PREFIX/bin/yarn --config $HADOOP_CONF_DIR timelineserver
 fi
