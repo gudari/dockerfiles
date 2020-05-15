@@ -1,0 +1,18 @@
+SPN Expiring
+
+Hi general
+
+These following SPNs will be expiring soon. Could you contact with us to renew them and apply the new keys? 
+
+Azure SPN Expiration v-e1-veconfig-transaction-cookie-kv in 2 day(s), client_id: 57fe81d8-9e35-4a68-af48-e7590b2e50b4, secrets: O27N:JrN[1geKQuiXfSA:.jfnEID5Ux]
+Azure SPN Expiration v-a1-veconfig-transaction-cookie-kv in 3 day(s), client_id: f93e041f-64a7-4699-a7e3-0b010bfc12a3, secrets: gjSYFu.5/efGX=j4WP9IYM3Utbf?d]3r
+Azure SPN Expiration v-ci-veconfig-transaction-cookie-kv in 3 day(s), client_id: ff4fcf85-c6a7-4016-9c7e-5eb899c25d5d, secrets: A6pmZB187ph-.f:Q[kdr3JW?]0oZ3glX
+Azure SPN Expiration v-u2-veconfig-transaction-cookie-kv in 3 day(s), client_id: 0b0091ff-5cc0-4d65-bb5e-6bf15c381496, secrets: R2Pg60L2/SRkd_qTsSVJWjKf@job_65_
+Azure SPN Expiration VSO-azureauthomation-ve-production-north-america in 4 day(s), client_id: 904f6b1f-e017-4721-a350-cb4490570041
+Azure SPN Expiration v-a1-appsapi-kv in 5 day(s), client_id: 39812a17-72e0-414a-b112-eb9d7a4a4594
+Azure SPN Expiration v-e1-appsapi-kv in 5 day(s), client_id: 0b0ffdd3-224e-4457-9571-84f7095104a1
+Azure SPN Expiration v-u2-appsapi-kv in 5 day(s), client_id: 65a8591e-396a-404e-b926-cf4bdf94bd62
+
+Remember that some of those SPN accounts are going to expire in Easter holidays and we have to renew them before.
+
+Thank you

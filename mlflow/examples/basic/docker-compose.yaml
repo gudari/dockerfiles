@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  mlflow:
+    image: gudari/mlflow:1.7.2
+    container_name: mlflow
+    hostname: mlflow
+    ports:
+    - "5000:5000"
+    env_file:
+    - mlflow.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
