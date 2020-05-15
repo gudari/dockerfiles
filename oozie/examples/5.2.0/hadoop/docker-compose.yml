@@ -1,0 +1,93 @@
+version: "3.7"
+
+services:
+  hue:
+    image: gudari/oozie:5.2.0
+    container_name: oozie
+    hostname: oozie
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+    env_file:
+    - ./oozie.env
+    - ./hadoop.env
+
+  namenode:
+    image: gudari/hadoop:2.10.0
+    container_name: namenode
+    hostname: namenode
+    volumes:
+      - ./storage/namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=local
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: gudari/hadoop:2.10.0
+    container_name: datanode
+    hostname: datanode
+    volumes:
+      - ./storage/datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+
+  resourcemanager:
+    image: gudari/hadoop:2.10.0
+    container_name: resourcemanager
+    hostname: resourcemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864"
+    depends_on:
+      - namenode
+      - datanode
+    env_file:
+      - ./hadoop.env
+
+  nodemanager:
+    image: gudari/hadoop:2.10.0
+    container_name: nodemanager
+    hostname: nodemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+      - resourcemanager
+    env_file:
+      - ./hadoop.env
+
+  historyserver:
+    image: gudari/hadoop:2.10.0
+    container_name: historyserver
+    hostname: historyserver
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+    env_file:
+      - ./hadoop.env
+
+  timelineserver:
+    image: gudari/hadoop:2.10.0
+    container_name: timelineserver
+    hostname: timelineserver
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+    env_file:
+      - ./hadoop.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: oozie_hoster
+    hostname: oozie_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

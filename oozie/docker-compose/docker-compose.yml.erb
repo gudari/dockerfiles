@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  oozie:
+    image: gudari/oozie:<%= version %>
+    container_name: oozie
+    hostname: oozie
+    ports:
+    - "11000:11000"
+    env_file:
+    - ./oozie.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: oozie_hoster
+    hostname: oozie_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
