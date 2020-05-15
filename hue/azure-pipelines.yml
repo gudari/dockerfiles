@@ -13,9 +13,13 @@ pr: none
 pool:
   vmImage: 'ubuntu-18.04'
 
-steps:
-- bash: |
-    export DOCKER_PASSWORD=$(docker_password)
-    export DOCKER_USERNAME=$(docker_username)
-    cd $(Build.SourcesDirectory)/hue
-    make release-all
+jobs:
+- job: build
+  timeoutInMinutes: 120
+  cancelTimeoutInMinutes: 1
+  steps:
+  - bash: |
+      export DOCKER_PASSWORD=$(docker_password)
+      export DOCKER_USERNAME=$(docker_username)
+      cd $(Build.SourcesDirectory)/hue
+      make release-all
