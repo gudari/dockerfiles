@@ -92,7 +92,7 @@ push:
 push-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make push \
-			VERSION=$(ver)1 ; \
+			VERSION=$(ver) ; \
 	))
 
 release: build push
