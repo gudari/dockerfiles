@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  h2o:
+    image: gudari/h3o:3.30.0.1
+    container_name: h2o
+    hostname: h2o
+    ports:
+    - "8080:8080"
+    env_file:
+    - h2o.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
