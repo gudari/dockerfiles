@@ -1,4 +1,4 @@
-FROM debian:10.2-slim
+FROM debian:10.3-slim
 
 ARG SUPERSET_VERSION=0.35.2
 ENV INIT_DIR /opt/init
