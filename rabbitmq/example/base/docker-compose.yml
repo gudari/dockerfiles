@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  rabbitmq:
+    image: gudari/rabbitmq:3.8.3
+    container_name: rabbitmq
+    hostname: rabbitmq
+    env_file:
+    - rabbitmq.env
+    ports:
+    - "15672:15672"
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
