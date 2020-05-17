@@ -1,5 +1,5 @@
   
-version: "3.7"
+version: "3.8"
 
 services:
   hue:
@@ -12,7 +12,7 @@ services:
   hoster:
     image: dvdarias/docker-hoster
     container_name: hadoop_hoster
-    hostname: hadoop_hoster
+    hostname: hue_hoster
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
       - /etc/hosts:/tmp/hosts

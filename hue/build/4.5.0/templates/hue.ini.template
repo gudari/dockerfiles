@@ -876,9 +876,9 @@
     #   options='{"url": "mysql://root:secret@database:3306/hue"}'
     #   ## options='{"url": "mysql://${USER}:${PASSWORD}@localhost:3306/hue"}'
 
-    # [[[hive]]]
-    #   name=Hive
-    #   interface=hiveserver2
+    [[[hive]]]
+      name=Hive
+      interface=hiveserver2
 
     # [[[llap]]]
     #   name=LLAP
@@ -922,13 +922,13 @@
     #   name=Spark Submit Python
     #   interface=livy-batch
 
-    # [[[text]]]
-    #   name=Text
-    #   interface=text
+    [[[text]]]
+      name=Text
+      interface=text
 
-    # [[[markdown]]]
-    #   name=Markdown
-    #   interface=text
+    [[[markdown]]]
+      name=Markdown
+      interface=text
 
     # [[[sqlite]]]
     #   name = SQLite
@@ -948,29 +948,29 @@
     #   name=Pig
     #   interface=oozie
 
-    # [[[java]]]
-    #   name=Java
-    #   interface=oozie
+    [[[java]]]
+      name=Java
+      interface=oozie
 
     # [[[spark2]]]
     #   name=Spark
     #   interface=oozie
 
-    # [[[mapreduce]]]
-    #   name=MapReduce
-    #   interface=oozie
+    [[[mapreduce]]]
+      name=MapReduce
+      interface=oozie
 
     # [[[sqoop1]]]
     #   name=Sqoop1
     #   interface=oozie
 
-    # [[[distcp]]]
-    #   name=Distcp
-    #   interface=oozie
+    [[[distcp]]]
+      name=Distcp
+      interface=oozie
 
-    # [[[shell]]]
-    #   name=Shell
-    #   interface=oozie
+    [[[shell]]]
+      name=Shell
+      interface=oozie
 
     # [[[presto]]]
     #   name=Presto SQL
@@ -1134,10 +1134,10 @@
 
   # Host where HiveServer2 is running.
   # If Kerberos security is enabled, use fully-qualified domain name (FQDN).
-  ## hive_server_host=localhost
+  hive_server_host=$(beeswax_ hive_server_host)
 
   # Port where HiveServer2 Thrift server runs on.
-  ## hive_server_port=10000
+  hive_server_port=10000
   
   # Host where LLAP is running
   ## llap_server_host = localhost
@@ -1178,10 +1178,10 @@
   
   # Host where Hive Metastore Server (HMS) is running.
   # If Kerberos security is enabled, the fully-qualified domain name (FQDN) is required.
-  ## hive_metastore_host=localhost
+  hive_metastore_host=$(beeswax_hive_metastore_host)
 
   # Configure the port the Hive Metastore Server runs on.
-  ## hive_metastore_port=9083
+  hive_metastore_port=9083
 
   # Hive configuration directory, where hive-site.xml is located
   ## hive_conf_dir=/etc/hive/conf
@@ -1629,7 +1629,7 @@
 [liboozie]
   # The URL where the Oozie service runs on. This is required in order for
   # users to submit jobs. Empty value disables the config check.
-  ## oozie_url=http://localhost:11000/oozie
+  oozie_url=$(liboozie_oozie_url)
 
   # Requires FQDN in oozie_url if enabled
   ## security_enabled=false
