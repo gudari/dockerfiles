@@ -1,4 +1,4 @@
-FROM gudari/hadoop:2.7.7
+FROM gudari/hadoop:2.10.0
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Hive docker image" Version="3.1.2"

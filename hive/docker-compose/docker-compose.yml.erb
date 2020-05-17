@@ -1,8 +1,8 @@
-version: "3.5"
+version: "3.8"
 
 services:
   namenode:
-    image: gudari/hadoop:2.7.7
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: namenode
     hostname: namenode
     ports:
@@ -15,7 +15,7 @@ services:
       - docker.local
 
   datanode:
-    image: gudari/hadoop:2.7.7
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: datanode
     hostname: datanode
     ports:
@@ -76,7 +76,7 @@ services:
       - docker.local
 
   resourcemanager:
-    image: gudari/hadoop:2.7.7
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: resourcemanager
     hostname: resourcemanager
     depends_on:
@@ -88,7 +88,7 @@ services:
       - docker.local
 
   nodemanager:
-    image: gudari/hadoop:2.7.7
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: nodemanager
     hostname: nodemanager
     depends_on:

@@ -1,6 +1,7 @@
 IMAGE_NAME := gudari/hive
-BASE_IMAGE := gudari/hadoop:2.7.7
-BUILD_DATE:= `date +"%y.%m.%d"`
+BASE_IMAGE := gudari/hadoop:2.10.0
+BUILD_DATE := `date +"%y.%m.%d"`
+HADOOP_VERSION := 2.10.0
 
 ALL_VERSIONS := \
 		1.2.2 \
@@ -44,6 +45,7 @@ example:
 	docker run --rm -i -v $(PWD)/docker-compose/docker-compose.yml.erb:/docker-compose.yml.erb:ro \
 		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
+			hadoop_version='$(HADOOP_VERSION)' \
 		/docker-compose.yml.erb > examples/base/$(VERSION)/docker-compose.yml
 
 example-all:
