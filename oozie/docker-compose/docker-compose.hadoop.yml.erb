@@ -6,7 +6,7 @@ services:
     container_name: oozie
     hostname: oozie
     environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
     env_file:
     - ./oozie.env
     - ./hadoop.env
@@ -29,7 +29,7 @@ services:
     volumes:
       - ./storage/datanode:/hadoop/dfs/data
     environment:
-      SERVICE_PRECONDITION: "namenode:9870"
+      SERVICE_PRECONDITION: "namenode:50070"
     depends_on:
       - namenode
     env_file:
@@ -40,7 +40,7 @@ services:
     container_name: resourcemanager
     hostname: resourcemanager
     environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864"
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
     depends_on:
       - namenode
       - datanode
@@ -52,7 +52,7 @@ services:
     container_name: nodemanager
     hostname: nodemanager
     environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
     depends_on:
       - namenode
       - datanode
@@ -65,7 +65,7 @@ services:
     container_name: historyserver
     hostname: historyserver
     environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
     depends_on:
       - namenode
       - datanode
@@ -77,7 +77,7 @@ services:
     container_name: timelineserver
     hostname: timelineserver
     environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
     depends_on:
       - namenode
       - datanode

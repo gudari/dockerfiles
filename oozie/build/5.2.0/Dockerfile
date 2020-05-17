@@ -36,9 +36,17 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p ${INIT_DIR}
 
+RUN  rm -fr $OOZIE_HOME/conf/hadoop-conf/* \
+     && ln -s $HADOOP_HOME/etc/hadoop/core-site.xml $OOZIE_HOME/conf/hadoop-conf/core-site.xml \
+     && ln -s $HADOOP_HOME/etc/hadoop/hdfs-site.xml $OOZIE_HOME/conf/hadoop-conf/hdfs-site.xml \
+     && ln -s $HADOOP_HOME/etc/hadoop/mapred-site.xml $OOZIE_HOME/conf/hadoop-conf/mapred-site.xml \
+     && ln -s $HADOOP_HOME/etc/hadoop/yarn-site.xml $OOZIE_HOME/conf/hadoop-conf/yarn-site.xml
+
 WORKDIR $OOZIE_HOME
 
 COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
 RUN chmod +x ${INIT_DIR}/bootstrap.sh
+
+ENV PATH=${PATH}:${OOZIE_HOME}/bin
 
 CMD ${INIT_DIR}/bootstrap.sh

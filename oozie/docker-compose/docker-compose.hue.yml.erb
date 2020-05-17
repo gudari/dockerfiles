@@ -1,8 +1,8 @@
 version: "3.7"
 
 services:
-  hue:
-    image: gudari/oozie:5.2.0
+  oozie:
+    image: gudari/oozie:<%= version %>
     container_name: oozie
     hostname: oozie
     environment:
@@ -11,8 +11,17 @@ services:
     - ./oozie.env
     - ./hadoop.env
 
+  hue:
+    image: gudari/hue:<%= hue_version %>
+    container_name: hue
+    hostname: hue
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+    - ./hue.env
+
   namenode:
-    image: gudari/hadoop:2.10.0
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: namenode
     hostname: namenode
     volumes:
@@ -23,7 +32,7 @@ services:
       - ./hadoop.env
 
   datanode:
-    image: gudari/hadoop:2.10.0
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: datanode
     hostname: datanode
     volumes:
@@ -36,7 +45,7 @@ services:
       - ./hadoop.env
 
   resourcemanager:
-    image: gudari/hadoop:2.10.0
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: resourcemanager
     hostname: resourcemanager
     environment:
@@ -48,7 +57,7 @@ services:
       - ./hadoop.env
 
   nodemanager:
-    image: gudari/hadoop:2.10.0
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: nodemanager
     hostname: nodemanager
     environment:
@@ -61,7 +70,7 @@ services:
       - ./hadoop.env
 
   historyserver:
-    image: gudari/hadoop:2.10.0
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: historyserver
     hostname: historyserver
     environment:
@@ -73,7 +82,7 @@ services:
       - ./hadoop.env
 
   timelineserver:
-    image: gudari/hadoop:2.10.0
+    image: gudari/hadoop:<%= hadoop_version %>
     container_name: timelineserver
     hostname: timelineserver
     environment:

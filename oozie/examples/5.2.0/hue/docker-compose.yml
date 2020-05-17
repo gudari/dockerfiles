@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  hue:
+  oozie:
     image: gudari/oozie:5.2.0
     container_name: oozie
     hostname: oozie
@@ -10,6 +10,15 @@ services:
     env_file:
     - ./oozie.env
     - ./hadoop.env
+
+  hue:
+    image: gudari/hue:4.7.0
+    container_name: hue
+    hostname: hue
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+    - ./hue.env
 
   namenode:
     image: gudari/hadoop:2.10.0
