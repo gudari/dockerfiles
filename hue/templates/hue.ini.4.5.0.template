@@ -948,29 +948,29 @@
     #   name=Pig
     #   interface=oozie
 
-    # [[[java]]]
-    #   name=Java
-    #   interface=oozie
+    [[[java]]]
+      name=Java
+      interface=oozie
 
     # [[[spark2]]]
     #   name=Spark
     #   interface=oozie
 
-    # [[[mapreduce]]]
-    #   name=MapReduce
-    #   interface=oozie
+    [[[mapreduce]]]
+      name=MapReduce
+      interface=oozie
 
     # [[[sqoop1]]]
     #   name=Sqoop1
     #   interface=oozie
 
-    # [[[distcp]]]
-    #   name=Distcp
-    #   interface=oozie
+    [[[distcp]]]
+      name=Distcp
+      interface=oozie
 
-    # [[[shell]]]
-    #   name=Shell
-    #   interface=oozie
+    [[[shell]]]
+      name=Shell
+      interface=oozie
 
     # [[[presto]]]
     #   name=Presto SQL
@@ -1629,7 +1629,7 @@
 [liboozie]
   # The URL where the Oozie service runs on. This is required in order for
   # users to submit jobs. Empty value disables the config check.
-  ## oozie_url=http://localhost:11000/oozie
+  oozie_url=$(liboozie_oozie_url)
 
   # Requires FQDN in oozie_url if enabled
   ## security_enabled=false
