@@ -2,10 +2,12 @@ IMAGE_NAME := gudari/hive
 BASE_IMAGE := gudari/hadoop:2.10.0
 BUILD_DATE := `date +"%y.%m.%d"`
 HADOOP_VERSION := 2.10.0
+HUE_VERSION := 4.7.0
+OOZIE_VERSION := 5.2.0
 
 ALL_VERSIONS := \
 		1.2.2 \
-		2.3.6 \
+		2.3.7 \
 		3.1.2
 
 dockerfile:
@@ -48,13 +50,49 @@ example:
 			hadoop_version='$(HADOOP_VERSION)' \
 		/docker-compose.yml.erb > examples/base/$(VERSION)/docker-compose.yml
 
+example-oozie:
+	mkdir -p examples/oozie/$(VERSION)
+	cp env/hadoop.env examples/oozie/$(VERSION)/hadoop.env
+	cp env/mysql.env examples/oozie/$(VERSION)/mysql.env
+	cp env/hive.env examples/oozie/$(VERSION)/hive.env
+	cp env/oozie.env examples/oozie/$(VERSION)/oozie.env
+	docker run --rm -i -v $(PWD)/docker-compose/docker-compose.oozie.yml.erb:/docker-compose.yml.erb:ro \
+		ruby:alpine erb -U -T - \
+			version='$(VERSION)' \
+			hadoop_version='$(HADOOP_VERSION)' \
+			oozie_version='$(OOZIE_VERSION)' \
+		/docker-compose.yml.erb > examples/oozie/$(VERSION)/docker-compose.yml
+
+example-hue:
+	mkdir -p examples/hue/$(VERSION)
+	cp env/hadoop.env examples/hue/$(VERSION)/hadoop.env
+	cp env/mysql.env examples/hue/$(VERSION)/mysql.env
+	cp env/hive.env examples/hue/$(VERSION)/hive.env
+	cp env/oozie.env examples/hue/$(VERSION)/oozie.env
+	cp env/hue.env examples/hue/$(VERSION)/hue.env
+	docker run --rm -i -v $(PWD)/docker-compose/docker-compose.hue.yml.erb:/docker-compose.yml.erb:ro \
+		ruby:alpine erb -U -T - \
+			version='$(VERSION)' \
+			hadoop_version='$(HADOOP_VERSION)' \
+			oozie_version='$(OOZIE_VERSION)' \
+			hue_version='$(HUE_VERSION)' \
+		/docker-compose.yml.erb > examples/hue/$(VERSION)/docker-compose.yml
+
 example-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make example \
 			VERSION=$(ver) ; \
 	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make example-oozie \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make example-hue \
+			VERSION=$(ver) ; \
+	))
 
-src: dockerfile example
+src: dockerfile example example-oozie example-hue
 
 src-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \

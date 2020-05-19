@@ -39,7 +39,7 @@ services:
       - docker.local
 
   hive-metastore:
-    image: gudari/hive:2.3.6
+    image: gudari/hive:2.3.7
     ports:
     - "9083:9083"
     env_file:
@@ -57,7 +57,7 @@ services:
       - docker.local
 
   hive-hiveserver2:
-    image: gudari/hive:2.3.6
+    image: gudari/hive:2.3.7
     ports:
     - "10000:10000"
     env_file:
@@ -97,6 +97,45 @@ services:
       - resourcemanager
     env_file:
       - ./hadoop.env
+    networks:
+      - docker.local
+
+  historyserver:
+    image: gudari/hadoop:2.10.0
+    container_name: historyserver
+    hostname: historyserver
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+  timelineserver:
+    image: gudari/hadoop:2.10.0
+    container_name: timelineserver
+    hostname: timelineserver
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hive_hoster
+    hostname: hive_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
     networks:
       - docker.local
 

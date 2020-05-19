@@ -183,31 +183,32 @@ generate_hdfs_site
 generate_mapred_site
 generate_yarn_site
 
-configure /opt/hadoop/etc/hadoop/core-site.xml core CORE_CONF
-configure /opt/hadoop/etc/hadoop/hdfs-site.xml hdfs HDFS_CONF
-configure /opt/hadoop/etc/hadoop/yarn-site.xml yarn YARN_CONF
-configure /opt/hadoop/etc/hadoop/httpfs-site.xml httpfs HTTPFS_CONF
-configure /opt/hadoop/etc/hadoop/kms-site.xml kms KMS_CONF
-configure /opt/hive/conf/hive-site.xml hive HIVE_SITE_CONF
+configure $HADOOP_HOME/etc/hadoop/core-site.xml core CORE_CONF
+configure $HADOOP_HOME/etc/hadoop/hdfs-site.xml hdfs HDFS_CONF
+configure $HADOOP_HOME/etc/hadoop/mapred-site.xml mapred MAPRED_CONF
+configure $HADOOP_HOME/etc/hadoop/yarn-site.xml yarn YARN_CONF
+configure $HADOOP_HOME/etc/hadoop/httpfs-site.xml httpfs HTTPFS_CONF
+configure $HADOOP_HOME/etc/hadoop/kms-site.xml kms KMS_CONF
+configure $HIVE_HOME/conf/hive-site.xml hive HIVE_SITE_CONF
 
 echo "Configuring for multihomed network"
 
 # HDFS
-addProperty /opt/hadoop/etc/hadoop/hdfs-site.xml dfs.namenode.rpc-bind-host 0.0.0.0
-addProperty /opt/hadoop/etc/hadoop/hdfs-site.xml dfs.namenode.servicerpc-bind-host 0.0.0.0
-addProperty /opt/hadoop/etc/hadoop/hdfs-site.xml dfs.namenode.http-bind-host 0.0.0.0
-addProperty /opt/hadoop/etc/hadoop/hdfs-site.xml dfs.namenode.https-bind-host 0.0.0.0
-addProperty /opt/hadoop/etc/hadoop/hdfs-site.xml dfs.client.use.datanode.hostname true
-addProperty /opt/hadoop/etc/hadoop/hdfs-site.xml dfs.datanode.use.datanode.hostname true
+addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.namenode.rpc-bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.namenode.servicerpc-bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.namenode.http-bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.namenode.https-bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.client.use.datanode.hostname true
+addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.datanode.use.datanode.hostname true
 
 # YARN
-addProperty /opt/hadoop/etc/hadoop/yarn-site.xml yarn.resourcemanager.bind-host 0.0.0.0
-addProperty /opt/hadoop/etc/hadoop/yarn-site.xml yarn.nodemanager.bind-host 0.0.0.0
-addProperty /opt/hadoop/etc/hadoop/yarn-site.xml yarn.nodemanager.bind-host 0.0.0.0
-addProperty /opt/hadoop/etc/hadoop/yarn-site.xml yarn.timeline-service.bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/yarn-site.xml yarn.resourcemanager.bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/yarn-site.xml yarn.nodemanager.bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/yarn-site.xml yarn.nodemanager.bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/yarn-site.xml yarn.timeline-service.bind-host 0.0.0.0
 
 # MAPRED
-addProperty /opt/hadoop/etc/hadoop/mapred-site.xml yarn.nodemanager.bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/mapred-site.xml yarn.nodemanager.bind-host 0.0.0.0
 
 for i in ${SERVICE_PRECONDITION[@]}
 do
@@ -231,6 +232,6 @@ if [[ "${HOSTNAME}" =~ "metastore" ]]; then
   hdfs dfs -mkdir -p /user/hive/warehouse
   hdfs dfs -chmod g+w /tmp
   hdfs dfs -chmod g+w /user/hive/warehouse
-  /opt/hive/bin/schematool -initSchema -dbType mysql
-  /opt/hive/bin/hive --service metastore --hiveconf hive.root.logger=DEBUG,console
+  $HIVE_HOME/bin/schematool -initSchema -dbType mysql
+  $HIVE_HOME/bin/hive --service metastore --hiveconf hive.root.logger=DEBUG,console
 fi

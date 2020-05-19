@@ -1,6 +1,78 @@
 version: "3.8"
 
 services:
+
+  hive-metastore:
+    image: gudari/hive:1.2.2
+    ports:
+    - "9083:9083"
+    env_file:
+      - ./hive.env
+      - ./hadoop.env
+    container_name: hive-metastore
+    hostname: hive-metastore
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-mysql:3306"
+    depends_on:
+      - namenode
+      - datanode
+      - hive-metastore-mysql
+    networks:
+      - docker.local
+
+  hive-hiveserver2:
+    image: gudari/hive:1.2.2
+    ports:
+    - "10000:10000"
+    env_file:
+      - ./hive.env
+      - ./hadoop.env
+    container_name: hive-hiveserver2
+    hostname: hive-hiveserver2
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-mysql:3306 hive-metastore:9083"
+    depends_on:
+      - namenode
+      - datanode
+      - hive-metastore-mysql
+      - hive-metastore
+    networks:
+      - docker.local
+
+  hive-metastore-mysql:
+    image: mysql:5.6.40
+    ports:
+    - "3306:3306"
+    env_file:
+      - ./mysql.env
+    container_name: hive-metastore-mysql
+    hostname: hive-metastore-mysql
+    networks:
+      - docker.local
+
+  hue:
+    image: gudari/hue:4.7.0
+    container_name: hue
+    hostname: hue
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+    - ./hue.env
+    networks:
+      - docker.local
+
+  oozie:
+    image: gudari/oozie:5.2.0
+    container_name: oozie
+    hostname: oozie
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+    - ./oozie.env
+    - ./hadoop.env
+    networks:
+      - docker.local
+
   namenode:
     image: gudari/hadoop:2.10.0
     container_name: namenode
@@ -20,58 +92,12 @@ services:
     hostname: datanode
     ports:
     - "50075:50075"
-    depends_on:
-      - namenode
-    env_file:
-      - ./hadoop.env
-    networks:
-      - docker.local
-
-  hive-metastore-mysql:
-    image: mysql:5.6.40
-    ports:
-    - "3306:3306"
-    env_file:
-      - ./mysql.env
-    container_name: hive-metastore-mysql
-    hostname: hive-metastore-mysql
-    networks:
-      - docker.local
-
-  hive-metastore:
-    image: gudari/hive:3.1.2
-    ports:
-    - "9083:9083"
-    env_file:
-      - ./hive.env
-      - ./hadoop.env
-    container_name: hive-metastore
-    hostname: hive-metastore
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-mysql:3306"
+      SERVICE_PRECONDITION: "namenode:50070"
     depends_on:
       - namenode
-      - datanode
-      - hive-metastore-mysql
-    networks:
-      - docker.local
-
-  hive-hiveserver2:
-    image: gudari/hive:3.1.2
-    ports:
-    - "10000:10000"
     env_file:
-      - ./hive.env
       - ./hadoop.env
-    container_name: hive-hiveserver2
-    hostname: hive-hiveserver2
-    environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-mysql:3306 hive-metastore:9083"
-    depends_on:
-      - namenode
-      - datanode
-      - hive-metastore-mysql
-      - hive-metastore
     networks:
       - docker.local
 
@@ -79,6 +105,8 @@ services:
     image: gudari/hadoop:2.10.0
     container_name: resourcemanager
     hostname: resourcemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
     depends_on:
       - namenode
       - datanode
@@ -91,6 +119,8 @@ services:
     image: gudari/hadoop:2.10.0
     container_name: nodemanager
     hostname: nodemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
     depends_on:
       - namenode
       - datanode
@@ -127,7 +157,6 @@ services:
       - ./hadoop.env
     networks:
       - docker.local
-
 
   hoster:
     image: dvdarias/docker-hoster

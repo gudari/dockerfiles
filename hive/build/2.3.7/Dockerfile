@@ -1,9 +1,9 @@
 FROM gudari/hadoop:2.10.0
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Hive docker image" Version="2.3.6"
+LABEL Description="Hive docker image" Version="2.3.7"
 
-ARG HIVE_VERSION=2.3.6
+ARG HIVE_VERSION=2.3.7
 ENV HIVE_HOME=/opt/hive
 ENV INIT_DIR=/opt/init
 

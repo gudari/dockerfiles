@@ -1,42 +1,6 @@
 version: "3.8"
 
 services:
-  namenode:
-    image: gudari/hadoop:<%= hadoop_version %>
-    container_name: namenode
-    hostname: namenode
-    ports:
-    - "50070:50070"
-    environment:
-      - CLUSTER_NAME=local
-    env_file:
-      - ./hadoop.env
-    networks:
-      - docker.local
-
-  datanode:
-    image: gudari/hadoop:<%= hadoop_version %>
-    container_name: datanode
-    hostname: datanode
-    ports:
-    - "50075:50075"
-    depends_on:
-      - namenode
-    env_file:
-      - ./hadoop.env
-    networks:
-      - docker.local
-
-  hive-metastore-mysql:
-    image: mysql:5.6.40
-    ports:
-    - "3306:3306"
-    env_file:
-      - ./mysql.env
-    container_name: hive-metastore-mysql
-    hostname: hive-metastore-mysql
-    networks:
-      - docker.local
 
   hive-metastore:
     image: gudari/hive:<%= version %>
@@ -75,10 +39,74 @@ services:
     networks:
       - docker.local
 
+  hive-metastore-mysql:
+    image: mysql:5.6.40
+    ports:
+    - "3306:3306"
+    env_file:
+      - ./mysql.env
+    container_name: hive-metastore-mysql
+    hostname: hive-metastore-mysql
+    networks:
+      - docker.local
+
+  hue:
+    image: gudari/hue:<%= hue_version %>
+    container_name: hue
+    hostname: hue
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+    - ./hue.env
+    networks:
+      - docker.local
+
+  oozie:
+    image: gudari/oozie:<%= oozie_version %>
+    container_name: oozie
+    hostname: oozie
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+    - ./oozie.env
+    - ./hadoop.env
+    networks:
+      - docker.local
+
+  namenode:
+    image: gudari/hadoop:<%= hadoop_version %>
+    container_name: namenode
+    hostname: namenode
+    ports:
+    - "50070:50070"
+    environment:
+      - CLUSTER_NAME=local
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
+  datanode:
+    image: gudari/hadoop:<%= hadoop_version %>
+    container_name: datanode
+    hostname: datanode
+    ports:
+    - "50075:50075"
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+    networks:
+      - docker.local
+
   resourcemanager:
     image: gudari/hadoop:<%= hadoop_version %>
     container_name: resourcemanager
     hostname: resourcemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
     depends_on:
       - namenode
       - datanode
@@ -91,6 +119,8 @@ services:
     image: gudari/hadoop:<%= hadoop_version %>
     container_name: nodemanager
     hostname: nodemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
     depends_on:
       - namenode
       - datanode
@@ -127,7 +157,6 @@ services:
       - ./hadoop.env
     networks:
       - docker.local
-
 
   hoster:
     image: dvdarias/docker-hoster
