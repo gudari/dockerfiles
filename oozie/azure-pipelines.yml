@@ -1,0 +1,21 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - oozie/Makefile
+    - oozie/scripts/*
+    - oozie/build/*
+
+pr: none
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+steps:
+- bash: |
+    export DOCKER_PASSWORD=$(docker_password)
+    export DOCKER_USERNAME=$(docker_username)
+    cd $(Build.SourcesDirectory)/oozie
+    make release-all
