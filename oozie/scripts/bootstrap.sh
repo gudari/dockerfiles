@@ -219,5 +219,6 @@ do
     wait_for_it ${i}
 done
 
+$OOZIE_HOME/bin/oozie-setup.sh sharelib create -fs /share/lib -locallib oozie-sharelib-5.2.0.tar.gz
 
 $OOZIE_HOME/bin/oozied.sh run
