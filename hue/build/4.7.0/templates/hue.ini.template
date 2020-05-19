@@ -1160,7 +1160,7 @@
 
   # Host where HiveServer2 is running.
   # If Kerberos security is enabled, use fully-qualified domain name (FQDN).
-  hive_server_host=$(beeswax_ hive_server_host)
+  hive_server_host=$(beeswax_hive_server_host)
 
   # Port where HiveServer2 Thrift server runs on.
   hive_server_port=10000
@@ -1252,7 +1252,7 @@
 
   # Thrift version to use when communicating with HiveServer2.
   # Version 11 comes with Hive 3.0. If issues, try 7.
-  ## thrift_version=11
+  thrift_version=7
 
   # A comma-separated list of white-listed Hive configuration properties that users are authorized to set.
   ## config_whitelist=hive.map.aggr,hive.exec.compress.output,hive.exec.parallel,hive.execution.engine,mapreduce.job.queuename

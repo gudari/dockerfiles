@@ -1134,7 +1134,7 @@
 
   # Host where HiveServer2 is running.
   # If Kerberos security is enabled, use fully-qualified domain name (FQDN).
-  hive_server_host=$(beeswax_ hive_server_host)
+  hive_server_host=$(beeswax_hive_server_host)
 
   # Port where HiveServer2 Thrift server runs on.
   hive_server_port=10000
