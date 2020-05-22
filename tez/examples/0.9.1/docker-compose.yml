@@ -1,9 +1,0 @@
-version: "3.7"
-
-services:
-  tez:
-    image: gudari/tez:0.9.1
-    container_name: tez
-    hostname: tez
-    ports:
-    - "8080:8080"

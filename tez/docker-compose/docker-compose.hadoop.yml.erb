@@ -1,0 +1,97 @@
+version: "3.8"
+
+services:
+  tez-ui:
+    image: gudari/tez-ui:<%= version %>
+    container_name: tez-ui
+    hostname: tez-ui
+    ports:
+    - "11000:11000"
+    env_file:
+    - ./hadoop.env
+    - ./tez.env
+
+  namenode:
+    image: gudari/hadoop:<%= hadoop_version %>
+    container_name: namenode
+    hostname: namenode
+    ports:
+    - "50070:50070"
+    volumes:
+      - ./storage/namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=local
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: gudari/hadoop:<%= hadoop_version %>
+    container_name: datanode
+    hostname: datanode
+    volumes:
+      - ./storage/datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    depends_on:
+      - namenode
+    env_file:
+      - ./hadoop.env
+
+  resourcemanager:
+    image: gudari/tez-hadoop:<%= version %>
+    container_name: resourcemanager
+    hostname: resourcemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
+    depends_on:
+      - namenode
+      - datanode
+    env_file:
+      - ./hadoop.env
+
+  nodemanager:
+    image: gudari/tez-hadoop:<%= version %>
+    container_name: nodemanager
+    hostname: nodemanager
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+      - resourcemanager
+    env_file:
+      - ./hadoop.env
+
+  historyserver:
+    image: gudari/tez-hadoop:<%= version %>
+    container_name: historyserver
+    hostname: historyserver
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+      - resourcemanager
+    env_file:
+      - ./hadoop.env
+
+  timelineserver:
+    image: gudari/tez-hadoop:<%= version %>
+    container_name: timelineserver
+    hostname: timelineserver
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+      - resourcemanager
+    env_file:
+      - ./hadoop.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: tez_hoster
+    hostname: tez_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

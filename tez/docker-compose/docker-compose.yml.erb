@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  tez-ui:
+    image: gudari/tez-ui:<%= version %>
+    container_name: tez-ui
+    hostname: tez-ui
+    ports:
+    - "8080:8080"
+    env_file:
+    - ./tez.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: tez_hoster
+    hostname: tez_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

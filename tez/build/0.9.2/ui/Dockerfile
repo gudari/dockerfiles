@@ -1,6 +1,6 @@
-FROM gudari/openjdk:8.0.242
+FROM gudari/hadoop:2.10.0
 
-ARG TEZ_VERSION=0.9.1
+ARG TEZ_VERSION=0.9.2
 ENV TEZ_HOME=/opt/tez
 ENV TOMCAT_VERSION=8.5.9
 ENV TOMCAT_HOME=/opt/tomcat
@@ -21,13 +21,17 @@ RUN apt-get update \
     && cp ${TEZ_HOME}/tez-ui-${TEZ_VERSION}.war ./ \
     && jar -xvf tez-ui-${TEZ_VERSION}.war \
     && rm -fr tez-ui-${TEZ_VERSION}.war \
-    && rm -rf ${TEZ_HOME} \
     && apt-get clean \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p ${INIT_DIR}
 
-WORKDIR $TOMCAT_HOME
+WORKDIR $TEZ_HOME
+
+ENV TEZ_CONF_DIR=${TEZ_HOME}/conf \
+    TEZ_JARS=${TEZ_HOME}
+ENV HADOOP_CLASSPATH=${TEZ_CONF_DIR}:${TEZ_JARS}/*:${TEZ_JARS}/lib/*
+
 
 COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
 RUN chmod +x ${INIT_DIR}/bootstrap.sh
