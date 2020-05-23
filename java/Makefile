@@ -1,10 +1,10 @@
 IMAGE_NAME := gudari/openjdk
-BASE_IMAGE := debian:10.3-slim
+BASE_IMAGE := debian:10.4-slim
 BUILD_DATE := `date +"%y.%m.%d"`
 
 ALL_VERSIONS := \
-		8.44.0.11-ca-8.0.242 \
-		11.37.17-ca-11.0.6
+		8.46.0.19-ca-8.0.252 \
+		11.39.15-ca-11.0.7
 
 dockerfile:
 	mkdir -p build/$(JAVA_VERSION)

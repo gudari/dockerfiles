@@ -1,10 +1,10 @@
-FROM <%= base_image %>
+FROM debian:10.4-slim
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Zulu Community OpenJDK docker image" Version="<%= java_version %>" zulu_version="<%= zulu_version %>"
+LABEL Description="Zulu Community OpenJDK docker image" Version="11.0.7" zulu_version="11.39.15"
 
-ARG JAVA_VERSION=<%= java_version %>
-ARG ZULU_VERSION=<%= zulu_version %>
+ARG JAVA_VERSION=11.0.7
+ARG ZULU_VERSION=11.39.15
 
 ENV JAVA_HOME /opt/java
 
@@ -22,8 +22,6 @@ RUN apt-get update \
     && apt-get clean \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
-
-WORKDIR $JAVA_HOME
 
 ENV PATH=$PATH:$JAVA_HOME/bin
 
