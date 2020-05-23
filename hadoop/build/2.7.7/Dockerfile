@@ -1,4 +1,4 @@
-FROM gudari/openjdk:8.0.242
+FROM gudari/openjdk:8.0.252
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Hadoop docker image" Version="2.7.7"
@@ -13,6 +13,12 @@ RUN apt-get update \
     && mkdir -p $HADOOP_HOME \
     && tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 \
     && rm -fr hadoop-${HADOOP_VERSION}.tar.gz \
+    ## Remove not required files and folders
+    && rm -fr $HADOOP_HOME/share/doc \
+    && find $HADOOP_HOME/share/hadoop/ -type d -name sources -prune -exec rm -rf {} \; \
+    && find $HADOOP_HOME/share/hadoop/ -type d -name jdiff -prune -exec rm -rf {} \; \
+    && find $HADOOP_HOME/share/hadoop/ -type d -name templates -prune -exec rm -rf {} \; \
+    && find $HADOOP_HOME/share/hadoop/ -type f -name *tests* -exec rm -fr {} \; \
     && apt-get remove -y wget \
     && apt-get clean \
     && apt-get autoremove -y \

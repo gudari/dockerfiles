@@ -1,5 +1,5 @@
 IMAGE_NAME := gudari/hadoop
-BASE_IMAGE := gudari/openjdk:8.0.242
+BASE_IMAGE := gudari/openjdk:8.0.252
 BUILD_DATE := `date +"%y.%m.%d"`
 
 2X_VERSIONS := \
