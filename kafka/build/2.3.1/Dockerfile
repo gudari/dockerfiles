@@ -1,4 +1,4 @@
-FROM gudari/openjdk:8.0.242
+FROM gudari/openjdk:8.0.252
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Kafka docker image" Version="2.3.1" Scala_version="2.12"
@@ -15,6 +15,7 @@ RUN apt-get update \
     && mkdir -p ${KAFKA_HOME} \
     && tar xvf kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -C ${KAFKA_HOME} --strip-components=1 \
     && rm -fr kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz \
+    && rm -fr $KAFKA_HOME/site-docs \
     && apt-get remove -y wget \
     && apt-get clean \
     && apt-get autoremove -y \

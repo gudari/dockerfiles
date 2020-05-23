@@ -1,5 +1,5 @@
 IMAGE_NAME := gudari/kafka
-BASE_IMAGE := gudari/openjdk:8.0.242
+BASE_IMAGE := gudari/openjdk:8.0.252
 ZOOKEEPER_VERSION := 3.4.14
 CMAK_VERSION := 2.0.0.2
 BUILD_DATE:= `date +"%y.%m.%d"`
@@ -7,14 +7,13 @@ BUILD_DATE:= `date +"%y.%m.%d"`
 0X_VERSIONS := \
 		0.11.0.3
 1X_VERSIONS := \
-		1.0.2 \
 		1.1.1
 2X_VERSIONS := \
-		2.0.1 \
 		2.1.1 \
 		2.2.2 \
 		2.3.1 \
-		2.4.0
+		2.4.1 \
+		2.5.0
 
 ALL_VERSIONS := $(0X_VERSIONS) $(1X_VERSIONS) $(2X_VERSIONS)
 

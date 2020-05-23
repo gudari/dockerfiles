@@ -1,11 +1,11 @@
-FROM <%= base_image %>
+FROM gudari/openjdk:8.0.252
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Kafka docker image" Version="<%= kafka_version %>" Scala_version="<%= scala_version %>"
+LABEL Description="Kafka docker image" Version="2.4.1" Scala_version="2.12"
 
 
-ARG KAFKA_VERSION=<%= kafka_version %>
-ARG SCALA_VERSION=<%= scala_version %>
+ARG KAFKA_VERSION=2.4.1
+ARG SCALA_VERSION=2.12
 ENV KAFKA_HOME=/opt/kafka
 ENV INIT_DIR=/opt/init
 
