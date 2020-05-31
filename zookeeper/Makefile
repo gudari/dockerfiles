@@ -1,11 +1,12 @@
 IMAGE_NAME := gudari/zookeeper
-BASE_IMAGE := gudari/openjdk:8.0.242
+BASE_IMAGE := gudari/openjdk:8.0.252
 BUILD_DATE := `date +"%y.%m.%d"`
 ZKUI_VERSION := 2.0-SNAPSHOT
 
 ALL_VERSIONS := \
 		3.4.14 \
-		3.5.6
+		3.5.8 \
+		3.6.1
 
 dockerfile:
 	mkdir -p build/$(VERSION)/scripts

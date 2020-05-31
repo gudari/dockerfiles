@@ -28,8 +28,8 @@ services:
 
   hoster:
     image: dvdarias/docker-hoster
-    container_name: hadoop_hoster
-    hostname: hadoop_hoster
+    container_name: zookeeper_hoster
+    hostname: zookeeper_hoster
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
       - /etc/hosts:/tmp/hosts

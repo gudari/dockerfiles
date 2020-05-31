@@ -7,7 +7,7 @@ ARG ZOOKEEPER_VERSION=<%= version %>
 ENV ZOOKEEPER_HOME=/opt/zookeeper
 ENV INIT_DIR=/opt/init
 
-<% if version.include? '3.5' -%>
+<% if version.include? '3.5' or version.include? '3.6' -%>
 <%    prefix = 'apache-' -%>
 <%    suffix = '-bin' -%>
 <% end -%>

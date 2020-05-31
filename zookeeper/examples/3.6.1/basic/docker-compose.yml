@@ -2,20 +2,11 @@ version: "3.7"
 
 services:
   zookeeper-server:
-    image: gudari/zookeeper:3.4.14
+    image: gudari/zookeeper:3.6.1
     container_name: zookeeper-server
     hostname: zookeeper-server
     env_file:
     - zookeeper.env
-
-  zkui:
-    image: gudari/zkui:2.0-SNAPSHOT
-    container_name: zkui
-    hostname: zkui
-    port:
-    - "9090:9090"
-    env_file:
-    - zkui.env
 
   hoster:
     image: dvdarias/docker-hoster

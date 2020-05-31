@@ -1,9 +1,9 @@
-FROM gudari/openjdk:8.0.242
+FROM gudari/openjdk:8.0.252
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Apache Zookeeper docker image" Version="3.5.6"
+LABEL Description="Apache Zookeeper docker image" Version="3.6.1"
 
-ARG ZOOKEEPER_VERSION=3.5.6
+ARG ZOOKEEPER_VERSION=3.6.1
 ENV ZOOKEEPER_HOME=/opt/zookeeper
 ENV INIT_DIR=/opt/init
 
