@@ -1,11 +1,13 @@
 IMAGE_NAME := gudari/zookeeper-rest
-BASE_IMAGE := gudari/openjdk:8.0.242
-BUILD_IMAGE := gudari/ant:1.10.7
+BASE_IMAGE := gudari/openjdk:8.0.252
+ANT_BUILD_IMAGE := gudari/ant:1.10.7
+MAVEN_BUILD_IMAGE := gudari/maven:3.6.3
 BUILD_DATE := `date +"%y.%m.%d"`
 
 ALL_VERSIONS := \
 		3.4.14 \
-		3.5.6
+		3.5.8 \
+		3.6.1
 
 dockerfile:
     ifeq ($(findstring 3.4,$(VERSION)),3.4)
@@ -25,10 +27,22 @@ ifeq ($(findstring 3.5,$(VERSION)),3.5)
 	docker run --rm -i -v $(PWD)/dockerfile/Dockerfile.3.5.x.template.erb:/Dockerfile.erb:ro \
 		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
-			build_image='$(BUILD_IMAGE)' \
+			ant_build_image='$(ANT_BUILD_IMAGE)' \
 			base_image='$(BASE_IMAGE)' \
 		/Dockerfile.erb > build/$(VERSION)/Dockerfile
 endif
+ifeq ($(findstring 3.6,$(VERSION)),3.6)
+	mkdir -p build/$(VERSION)/scripts
+	cp scripts/bootstrap.sh build/$(VERSION)/scripts/bootstrap.sh
+	cp scripts/zookeeper-rest.sh build/$(VERSION)/scripts/zookeeper-rest.sh
+	docker run --rm -i -v $(PWD)/dockerfile/Dockerfile.3.6.x.template.erb:/Dockerfile.erb:ro \
+		ruby:alpine erb -U -T - \
+			version='$(VERSION)' \
+			maven_build_image='$(MAVEN_BUILD_IMAGE)' \
+			base_image='$(BASE_IMAGE)' \
+		/Dockerfile.erb > build/$(VERSION)/Dockerfile
+endif
+
 dockerfile-all:
 	(set -e ; $(foreach ver, $(ALL_VERSIONS), \
 		make dockerfile \

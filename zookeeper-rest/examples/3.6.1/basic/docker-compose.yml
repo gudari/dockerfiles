@@ -2,16 +2,24 @@ version: "3.7"
 
 services:
   zookeeper-server:
-    image: gudari/zookeeper:3.5.6
+    image: gudari/zookeeper:3.6.1
     container_name: zookeeper-server
     hostname: zookeeper-server
     env_file:
     - zookeeper.env
   zookeeper-rest:
-    image: gudari/zookeeper-rest:3.5.6
+    image: gudari/zookeeper-rest:3.6.1
     container_name: zookeeper-rest
     hostname: zookeeper-rest
     ports:
     - "9998:9998"
     env_file:
     - zookeeper-rest.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: zookeeper_rest_hoster
+    hostname: zookeeper_rest_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

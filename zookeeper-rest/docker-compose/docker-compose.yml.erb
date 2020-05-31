@@ -15,3 +15,11 @@ services:
     - "9998:9998"
     env_file:
     - zookeeper-rest.env
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: zookeeper_rest_hoster
+    hostname: zookeeper_rest_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

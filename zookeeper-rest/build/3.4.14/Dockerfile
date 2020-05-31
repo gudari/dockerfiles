@@ -1,4 +1,4 @@
-FROM gudari/openjdk:8.0.242
+FROM gudari/openjdk:8.0.252
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Apache Zookeeper docker image" Version="3.4.14"

@@ -1,4 +1,4 @@
-FROM <%= ant_build_image %> as BUILD
+FROM <%= maven_build_image %> as BUILD
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Apache Zookeeper docker image" Version="<%= version %>"
@@ -20,10 +20,28 @@ RUN apt-get update \
     && mkdir -p ${INIT_DIR}
 
 WORKDIR ${ZOOKEEPER_REST_BUILD}
-RUN ant -Dversion=<%= version %>
+RUN mvn clean package -DskipTests
+
+RUN PATCH=" \
+        <plugin> \
+            <artifactId>maven-dependency-plugin</artifactId> \
+            <executions> \
+                <execution> \
+                    <phase>package</phase> \
+                    <goals> \
+                        <goal>copy-dependencies</goal> \
+                    </goals> \
+                    <configuration> \
+                        <outputDirectory>\${project.build.directory}/lib</outputDirectory> \
+                    </configuration> \
+                </execution> \
+            </executions> \
+        </plugin>" \
+    && escapedPatch=$(echo $PATCH | sed 's/\//\\\//g') \
+    && sed -i "/<\/plugins>/ s/.*/${escapedPatch}\n&/" $ZOOKEEPER_REST_BUILD/zookeeper-contrib/zookeeper-contrib-rest/pom.xml
 
 WORKDIR ${ZOOKEEPER_REST_BUILD}/zookeeper-contrib/zookeeper-contrib-rest
-RUN ant -Dversion=<%= version %>
+RUN mvn clean package -DskipTests
 
 FROM <%= base_image %>
 
@@ -41,9 +59,9 @@ RUN mkdir -p ${ZOOKEEPER_REST_HOME} \
 WORKDIR ${ZOOKEEPER_REST_HOME}
 
 COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/zookeeper-contrib/zookeeper-contrib-rest/conf ./conf
-COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/build/zookeeper-${ZOOKEEPER_REST_VERSION}.jar .
-COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/build/zookeeper-contrib/zookeeper-contrib-rest/lib ./lib
-COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/build/zookeeper-contrib/zookeeper-contrib-rest/zookeeper-${ZOOKEEPER_REST_VERSION}-rest.jar .
+COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/zookeeper-server/target/zookeeper-${ZOOKEEPER_REST_VERSION}.jar .
+COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/zookeeper-contrib/zookeeper-contrib-rest/target/lib ./lib
+COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/zookeeper-contrib/zookeeper-contrib-rest/target/zookeeper-contrib-rest-${ZOOKEEPER_REST_VERSION}.jar .
 
 COPY scripts/zookeeper-rest.sh ${ZOOKEEPER_REST_HOME}
 COPY scripts/bootstrap.sh ${INIT_DIR}
