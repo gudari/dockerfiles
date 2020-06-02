@@ -1,6 +1,7 @@
 IMAGE_NAME := gudari/hadoop
 BASE_IMAGE := gudari/openjdk:8.0.252
 BUILD_DATE := `date +"%y.%m.%d"`
+ZOOKEEPER_VERSION := 3.4.14
 
 2X_VERSIONS := \
 		2.7.7 \
@@ -49,14 +50,15 @@ example:
 			version='$(VERSION)' \
 		/docker-compose.yml.erb > examples/base/$(VERSION)/docker-compose.yml
 
-example-hue:
-	mkdir -p examples/hue/$(VERSION)
-	cp env/hadoop.env examples/hue/$(VERSION)/hadoop.env
-	cp env/hue.env examples/hue/$(VERSION)/hue.env
-	docker run --rm -i -v $(PWD)/docker-compose/docker-compose-hue.yml.erb:/docker-compose.yml.erb:ro \
+example-ha:
+	mkdir -p examples/ha/$(VERSION)
+	cp env/hadoop-ha.env examples/ha/$(VERSION)/hadoop-ha.env
+	cp env/zookeeper.env examples/ha/$(VERSION)/zookeeper.env
+	docker run --rm -i -v $(PWD)/docker-compose/docker-compose-ha.yml.erb:/docker-compose.yml.erb:ro \
 		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
-		/docker-compose.yml.erb > examples/hue/$(VERSION)/docker-compose.yml
+			zookeeper_version='$(ZOOKEEPER_VERSION)' \
+		/docker-compose.yml.erb > examples/ha/$(VERSION)/docker-compose.yml
 
 example-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
@@ -64,11 +66,11 @@ example-all:
 			VERSION=$(ver) ; \
 	))
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
-		make example-hue \
+		make example-ha \
 			VERSION=$(ver) ; \
 	))
 
-src: dockerfile example example-hue
+src: dockerfile example example-ha
 
 src-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \

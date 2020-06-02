@@ -1,82 +1,96 @@
 version: "3.7"
 
 services:
-  namenode:
+  namenode-0:
     image: gudari/hadoop:2.10.0
-    container_name: namenode
-    hostname: namenode
+    container_name: namenode-0
+    hostname: namenode-0
     ports:
     - "50070:50070"
     volumes:
-      - ./storage/namenode:/hadoop/dfs/name
+      - ./storage/namenode_0:/hadoop/dfs/name
     environment:
-      - CLUSTER_NAME=local
+      - HADOOP_CLUSTER_NAME=local
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoop.local
 
-  datanode:
+  datanode-0:
     image: gudari/hadoop:2.10.0
-    container_name: datanode
-    hostname: datanode
+    container_name: datanode-0
+    hostname: datanode-0
     volumes:
-      - ./storage/datanode:/hadoop/dfs/data
+      - ./storage/datanode_0:/hadoop/dfs/data
     environment:
-      SERVICE_PRECONDITION: "namenode:50070"
+      SERVICE_PRECONDITION: "namenode-0:50070"
     depends_on:
-      - namenode
+      - namenode-0
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoop.local
 
-  resourcemanager:
+  resourcemanager-0:
     image: gudari/hadoop:2.10.0
-    container_name: resourcemanager
-    hostname: resourcemanager
+    container_name: resourcemanager-0
+    hostname: resourcemanager-0
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
+      SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075"
     depends_on:
-      - namenode
-      - datanode
+      - namenode-0
+      - datanode-0
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoop.local
 
-  nodemanager:
+  nodemanager-0:
     image: gudari/hadoop:2.10.0
-    container_name: nodemanager
-    hostname: nodemanager
+    container_name: nodemanager-0
+    hostname: nodemanager-0
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075 resourcemanager-0:8088"
     depends_on:
-      - namenode
-      - datanode
-      - resourcemanager
+      - namenode-0
+      - datanode-0
+      - resourcemanager-0
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoop.local
 
   historyserver:
     image: gudari/hadoop:2.10.0
     container_name: historyserver
     hostname: historyserver
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075 resourcemanager-0:8088"
     depends_on:
-      - namenode
-      - datanode
-      - resourcemanager
+      - namenode-0
+      - datanode-0
+      - resourcemanager-0
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoop.local
 
   timelineserver:
     image: gudari/hadoop:2.10.0
     container_name: timelineserver
     hostname: timelineserver
+    volumes:
+      - ./storage/timelineserver:/hadoop/yarn/timeline
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075 resourcemanager-0:8088"
     depends_on:
-      - namenode
-      - datanode
-      - resourcemanager
+      - namenode-0
+      - datanode-0
+      - resourcemanager-0
     env_file:
       - ./hadoop.env
+    networks:
+      - hadoop.local
 
   hoster:
     image: dvdarias/docker-hoster
@@ -85,3 +99,10 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
       - /etc/hosts:/tmp/hosts
+    networks:
+      - hadoop.local
+
+networks:
+  hadoop.local:
+    driver: bridge
+    name: hadoop.local

@@ -1,93 +1,119 @@
 version: "3.7"
 
 services:
-  namenode-0:
-    image: gudari/hadoop:<%= version %>
-    container_name: namenode-0
-    hostname: namenode-0
-    ports:
-    - "50070:50070"
-    volumes:
-      - ./storage/namenode_0:/hadoop/dfs/name
+
+<% @max = 2%>
+<% for @i in 0..@max%>
+  zookeeper-server-<%= @i %>:
+    image: gudari/zookeeper:<%= zookeeper_version %>
+    container_name: zookeeper-server-<%= @i %>
+    hostname: zookeeper-server-<%= @i %>
     environment:
-      - HADOOP_CLUSTER_NAME=local
+<% for @j in 0..@max -%>
+      ZOO_CFG_server_<%= @j %>: "zookeeper-server-<%= @j %>:2888:3888"
+<% end -%>
+      ZOO_MYID: <%= @i %>
     env_file:
-      - ./hadoop.env
+    - zookeeper.env
     networks:
       - hadoop.local
+<% end %>
 
-  datanode-0:
+<% @max = 2%>
+<% for @i in 0..@max%>
+  journalnode-<%= @i %>:
     image: gudari/hadoop:<%= version %>
-    container_name: datanode-0
-    hostname: datanode-0
+    container_name: journalnode-<%= @i %>
+    hostname: journalnode-<%= @i %>
     volumes:
-      - ./storage/datanode_0:/hadoop/dfs/data
+      - ./storage/journalnode_<%= @i %>:/hadoop/dfs/journal
+    env_file:
+      - ./hadoop-ha.env
+    networks:
+      - hadoop.local
+<% end %>
+
+<% @max = 1%>
+<% for @i in 0..@max%>
+  namenode-<%= @i %>:
+    image: gudari/hadoop:<%= version %>
+    container_name: namenode-<%= @i %>
+    hostname: namenode-<%= @i %>
     environment:
-<% if version =~ /^2\./ -%>
+      SERVICE_PRECONDITION: "journalnode-0:8480 journalnode-1:8480 journalnode-2:8480 zookeeper-server-0:2181 zookeeper-server-1:2181 zookeeper-server-2:2181"
+    volumes:
+      - ./storage/namenode_<%= @i %>:/hadoop/dfs/name
+    env_file:
+      - ./hadoop-ha.env
+    networks:
+      - hadoop.local
+<% end %>
+
+<% @max = 1%>
+<% for @i in 0..@max%>
+  datanode-<%= @i %>:
+    image: gudari/hadoop:<%= version %>
+    container_name: datanode-<%= @i %>
+    hostname: datanode-<%= @i %>
+    volumes:
+      - ./storage/datanode_<%= @i %>:/hadoop/dfs/data
+    environment:
       SERVICE_PRECONDITION: "namenode-0:50070"
-<% else -%>
-      SERVICE_PRECONDITION: "namenode-0:9870"
-<% end -%>
     depends_on:
       - namenode-0
     env_file:
-      - ./hadoop.env
+      - ./hadoop-ha.env
     networks:
       - hadoop.local
+<% end %>
 
-  resourcemanager-0:
+<% @max = 1%>
+<% for @i in 0..@max%>
+  resourcemanager-<%= @i %>:
     image: gudari/hadoop:<%= version %>
-    container_name: resourcemanager-0
-    hostname: resourcemanager-0
+    container_name: resourcemanager-<%= @i %>
+    hostname: resourcemanager-<%= @i %>
     environment:
-<% if version =~ /^2\./ -%>
       SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075"
-<% else -%>
-      SERVICE_PRECONDITION: "namenode-0:9870 datanode-0:9864"
-<% end -%>
     depends_on:
       - namenode-0
       - datanode-0
     env_file:
-      - ./hadoop.env
+      - ./hadoop-ha.env
     networks:
       - hadoop.local
+<% end %>
 
-  nodemanager-0:
+<% @max = 1%>
+<% for @i in 0..@max%>
+  nodemanager-<%= @i %>:
     image: gudari/hadoop:<%= version %>
-    container_name: nodemanager-0
-    hostname: nodemanager-0
+    container_name: nodemanager-<%= @i %>
+    hostname: nodemanager-<%= @i %>
     environment:
-<% if version =~ /^2\./ -%>
       SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075 resourcemanager-0:8088"
-<% else -%>
-      SERVICE_PRECONDITION: "namenode-0:9870 datanode-0:9864 resourcemanager-0:8088"
-<% end -%>
     depends_on:
       - namenode-0
       - datanode-0
       - resourcemanager-0
     env_file:
-      - ./hadoop.env
+      - ./hadoop-ha.env
     networks:
       - hadoop.local
+<% end %>
 
   historyserver:
     image: gudari/hadoop:<%= version %>
     container_name: historyserver
     hostname: historyserver
     environment:
-<% if version =~ /^2\./ -%>
       SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075 resourcemanager-0:8088"
-<% else -%>
-      SERVICE_PRECONDITION: "namenode-0:9870 datanode-0:9864 resourcemanager-0:8088"
-<% end -%>
     depends_on:
       - namenode-0
       - datanode-0
       - resourcemanager-0
     env_file:
-      - ./hadoop.env
+      - ./hadoop-ha.env
     networks:
       - hadoop.local
 
@@ -95,20 +121,14 @@ services:
     image: gudari/hadoop:<%= version %>
     container_name: timelineserver
     hostname: timelineserver
-    volumes:
-      - ./storage/timelineserver:/hadoop/yarn/timeline
     environment:
-<% if version =~ /^2\./ -%>
       SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075 resourcemanager-0:8088"
-<% else -%>
-      SERVICE_PRECONDITION: "namenode-0:9870 datanode-0:9864 resourcemanager-0:8088"
-<% end -%>
     depends_on:
       - namenode-0
       - datanode-0
       - resourcemanager-0
     env_file:
-      - ./hadoop.env
+      - ./hadoop-ha.env
     networks:
       - hadoop.local
 

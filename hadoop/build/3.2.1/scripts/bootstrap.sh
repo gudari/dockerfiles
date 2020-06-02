@@ -178,6 +178,9 @@ addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.namenode.rpc-bind-host 0.0
 addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.namenode.servicerpc-bind-host 0.0.0.0
 addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.namenode.http-bind-host 0.0.0.0
 addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.namenode.https-bind-host 0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.journalnode.rpc-bind-host=0.0.0.0
+addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.journalnode.http-bind-host=0.0.0.0
+
 addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.client.use.datanode.hostname true
 addProperty $HADOOP_HOME/etc/hadoop/hdfs-site.xml dfs.datanode.use.datanode.hostname true
 
@@ -196,6 +199,17 @@ do
     wait_for_it ${i}
 done
 
+if [[ "${HOSTNAME}" =~ "journalnode" ]]; then
+  journaldir=$HDFS_CONF_dfs_journalnode_edits_dir
+  mkdir -p $journaldir
+  if [ ! -d $journaldir ]; then
+    echo "Journal node directory not found: $namedir"
+    exit 2
+  fi
+
+  $HADOOP_PREFIX/bin/hdfs --config $HADOOP_CONF_DIR journalnode
+fi
+
 if [[ "${HOSTNAME}" =~ "namenode" ]]; then
   namedir=`echo $HDFS_CONF_dfs_namenode_name_dir | sed -e 's#file://##'`
   mkdir -p $namedir
@@ -204,17 +218,38 @@ if [[ "${HOSTNAME}" =~ "namenode" ]]; then
     exit 2
   fi
 
-  if [ -z "$CLUSTER_NAME" ]; then
+  if [ -z "$HADOOP_CLUSTER_NAME" ]; then
     echo "Cluster name not specified"
     exit 2
   fi
 
-  if [ "`ls -A $namedir`" == "" ]; then
-    echo "Formatting namenode name directory: $namedir"
-    $HADOOP_PREFIX/bin/hdfs --config $HADOOP_CONF_DIR namenode -format $CLUSTER_NAME 
+  if [[ `hostname` =~ ^.*[0]$ ]]; then
+
+    if [ "`ls -A $namedir`" == "" ]; then
+      echo "Formatting namenode name directory: $namedir"
+      $HADOOP_PREFIX/bin/hdfs --config $HADOOP_CONF_DIR namenode -format $HADOOP_CLUSTER_NAME
+    fi
+
+    if [[ ! -z "$HDFS_CONF_dfs_ha_automatic___failover_enabled" ]]; then
+      if [[ ! -f $HDFS_CONF_dfs_namenode_name_dir/current/.hdfs-$HADOOP_CLUSTER_NAME-formatted ]]; then
+        _OUT=$($HADOOP_PREFIX/bin/hdfs --config $HADOOP_CONF_DIR zkfc -formatZK -nonInteractive 2>&1)
+        (echo $_OUT | grep -q "FATAL") && exit 1
+        touch $HDFS_CONF_dfs_namenode_name_dir/current/.hdfs-k8s-zkfc-formatted
+      fi
+    fi
+  
+  elif [[ `hostname` =~ ^.*[1]$ ]]; then
+    if [ "`ls -A $namedir`" == "" ]; then
+      echo "Formatting secondary namenode name directory: $namedir"
+      $HADOOP_PREFIX/bin/hdfs --config $HADOOP_CONF_DIR namenode -bootstrapStandby
+    fi
   fi
 
+  if [[ ! -z "$HDFS_CONF_dfs_ha_automatic___failover_enabled" ]]; then
+    $HADOOP_PREFIX/sbin/hadoop-daemon.sh --config $HADOOP_CONF_DIR start zkfc
+  fi
   $HADOOP_PREFIX/bin/hdfs --config $HADOOP_CONF_DIR namenode
+
 fi
 
 if [[ "${HOSTNAME}" =~ "datanode" ]]; then

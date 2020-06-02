@@ -8,7 +8,7 @@ ENV HADOOP_HOME=/opt/hadoop
 ENV INIT_DIR=/opt/init
 
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y wget netcat \
+    && apt-get install --no-install-recommends -y wget netcat procps \
     && wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
     && mkdir -p $HADOOP_HOME \
     && tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 \
