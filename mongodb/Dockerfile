@@ -17,6 +17,7 @@ RUN apt-get update \
     && mkdir -p ${INIT_DIR}
 
 WORKDIR ${MONGODB_HOME}
+RUN PATH=${PATH}:${MONGODB_HOME}/bin
 
 COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
 RUN chmod +x ${INIT_DIR}/bootstrap.sh
