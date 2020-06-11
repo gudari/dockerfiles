@@ -23,6 +23,8 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
+WORKDIR $JAVA_HOME
+
 ENV PATH=$PATH:$JAVA_HOME/bin
 
 CMD [ "java", "-version" ]
