@@ -1,9 +1,9 @@
-FROM openjdk:11.0.7-jdk-buster
+FROM <%= base_image %>
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Hadoop docker image" Version="3.2.1"
+LABEL Description="Hadoop docker image" Version="<%= version %>"
 
-ARG HADOOP_VERSION=3.2.1
+ARG HADOOP_VERSION=<%= version %>
 ENV HADOOP_HOME=/opt/hadoop
 ENV INIT_DIR=/opt/init
 

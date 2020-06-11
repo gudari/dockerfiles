@@ -1,9 +1,9 @@
-FROM gudari/openjdk:8.0.252
+FROM arm64v8/openjdk:11.0.7-jdk-buster
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Hadoop docker image" Version="3.0.3"
+LABEL Description="Hadoop docker image" Version="2.10.0"
 
-ARG HADOOP_VERSION=3.0.3
+ARG HADOOP_VERSION=2.10.0
 ENV HADOOP_HOME=/opt/hadoop
 ENV INIT_DIR=/opt/init
 

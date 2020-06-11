@@ -1,4 +1,4 @@
-FROM gudari/openjdk:8.0.252
+FROM openjdk:11.0.7-jdk-buster
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Hadoop docker image" Version="3.1.3"

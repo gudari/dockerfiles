@@ -1,13 +1,12 @@
 IMAGE_NAME := gudari/hadoop
-BASE_IMAGE := gudari/openjdk:8.0.252
+BASE_IMAGE := openjdk:11.0.7-jdk-buster
+ARM64V8_BASE_IMAGE := arm64v8/openjdk:11.0.7-jdk-buster
 BUILD_DATE := `date +"%y.%m.%d"`
 ZOOKEEPER_VERSION := 3.4.14
 
 2X_VERSIONS := \
-		2.7.7 \
 		2.10.0
 3X_VERSIONS := \
-		3.0.3 \
 		3.1.3 \
 		3.2.1
 
@@ -16,15 +15,28 @@ ALL_VERSIONS := $(2X_VERSIONS) $(3X_VERSIONS)
 dockerfile:
 	mkdir -p build/$(VERSION)/scripts
 	cp scripts/bootstrap.sh build/$(VERSION)/scripts/bootstrap.sh
-	docker run --rm -i -v $(PWD)/Dockerfile.template.erb:/Dockerfile.erb:ro \
+	docker run --rm -i -v $(PWD)/Dockerfile.template.amd64.erb:/Dockerfile.erb:ro \
 		ruby:alpine erb -U -T 0 \
 			version='$(VERSION)' \
 			base_image='$(BASE_IMAGE)' \
 		/Dockerfile.erb > build/$(VERSION)/Dockerfile
 
+dockerfile-arm64v8:
+	mkdir -p build-arm64v8/$(VERSION)/scripts
+	cp scripts/bootstrap.sh build-arm64v8/$(VERSION)/scripts/bootstrap.sh
+	docker run --rm -i -v $(PWD)/Dockerfile.template.arm64v8.erb:/Dockerfile.erb:ro \
+		ruby:alpine erb -U -T 0 \
+			version='$(VERSION)' \
+			base_image='$(ARM64V8_BASE_IMAGE)' \
+		/Dockerfile.erb > build-arm64v8/$(VERSION)/Dockerfile
+
 dockerfile-all:
 	(set -e ; $(foreach ver, $(ALL_VERSIONS), \
 		make dockerfile \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver, $(ALL_VERSIONS), \
+		make dockerfile-arm64v8 \
 			VERSION=$(ver) ; \
 	))
 
@@ -36,9 +48,20 @@ image:
 		-t $(IMAGE_NAME):latest \
 		build/$(VERSION)
 
+image-arm64v8:
+	docker build \
+		--build-arg HADOOP_VERSION=$(VERSION) \
+		-t $(IMAGE_NAME):$(VERSION)-arm64v8-$(BUILD_DATE) \
+		-t $(IMAGE_NAME):$(VERSION)-arm64v8 \
+		build-arm64v8/$(VERSION)
+
 image-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make image \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make image-arm64v8 \
 			VERSION=$(ver) ; \
 	))
 
@@ -72,17 +95,30 @@ example-all:
 
 src: dockerfile example example-ha
 
+src-arm64v8: dockerfile-arm64v8
+
 src-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make src \
 			VERSION=$(ver) ; \
 	))
 
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make src-arm64v8 \
+			VERSION=$(ver) ; \
+	))
+
 build: src image
+
+build-arm64v8: src image-arm64v8
 
 build-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make build \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make build-arm64v8 \
 			VERSION=$(ver) ; \
 	))
 
@@ -92,17 +128,32 @@ push:
 	docker push $(IMAGE_NAME):$(VERSION)
 	docker push $(IMAGE_NAME):latest
 
+push-arm64v8:
+	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+	docker push $(IMAGE_NAME):$(VERSION)-arm64v8-$(BUILD_DATE)
+	docker push $(IMAGE_NAME):$(VERSION)-arm64v8
+
 push-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make push \
 			VERSION=$(ver) ; \
 	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make push-arm64v8 \
+			VERSION=$(ver) ; \
+	))
 
 release: build push
+
+release-arm64v8: build-arm64v8 push-arm64v8
 
 release-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make release \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make release-arm64v8 \
 			VERSION=$(ver) ; \
 	))
 
