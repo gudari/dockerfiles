@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# configure default values
+export HUE_INI_desktop_database_engine=${HUE_INI_desktop_database_engine:-sqlite3}
+export HUE_INI_desktop_database_name=${HUE_INI_desktop_database_name:-desktop/desktop.db}
+
 function wait_for_it()
 {
     local serviceport=$1
@@ -39,5 +43,10 @@ for i in ${SERVICE_PRECONDITION[@]}
 do
     wait_for_it ${i}
 done
+
+if [[ "$HUE_INI_desktop_database_engine" != "sqlite3" ]]; then
+  $HUE_HOME/build/env/bin/hue syncdb --noinput
+  $HUE_HOME/build/env/bin/hue migrate
+fi
 
 $HUE_HOME/build/env/bin/supervisor

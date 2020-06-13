@@ -1,9 +1,9 @@
-FROM openjdk:11.0.7-jdk-slim-buster
+FROM <%= base_image %>
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Cloudera Hue docker image" Version="4.6.0"
+LABEL Description="Cloudera Hue docker image" Version="<%= version %>"
 
-ARG HUE_VERSION=4.6.0
+ARG HUE_VERSION=<%= version %>
 ENV HUE_HOME=/opt/hue
 ENV HUE_TMP=/opt/tmp
 ENV INIT_DIR=/opt/init

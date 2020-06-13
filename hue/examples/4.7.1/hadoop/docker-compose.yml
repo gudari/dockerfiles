@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   hue:
-    image: gudari/hue:4.5.0
+    image: gudari/hue:4.7.1
     container_name: hue
     hostname: hue
     environment:
@@ -11,7 +11,7 @@ services:
     - hue.env
 
   namenode:
-    image: gudari/hadoop:3.2.1
+    image: gudari/hadoop:2.10.1
     container_name: namenode
     hostname: namenode
     volumes:
@@ -22,7 +22,7 @@ services:
       - ./hadoop.env
 
   datanode:
-    image: gudari/hadoop:3.2.1
+    image: gudari/hadoop:2.10.1
     container_name: datanode
     hostname: datanode
     volumes:
@@ -35,7 +35,7 @@ services:
       - ./hadoop.env
 
   resourcemanager:
-    image: gudari/hadoop:3.2.1
+    image: gudari/hadoop:2.10.1
     container_name: resourcemanager
     hostname: resourcemanager
     environment:
@@ -47,7 +47,7 @@ services:
       - ./hadoop.env
 
   nodemanager:
-    image: gudari/hadoop:3.2.1
+    image: gudari/hadoop:2.10.1
     container_name: nodemanager
     hostname: nodemanager
     environment:
@@ -60,7 +60,7 @@ services:
       - ./hadoop.env
 
   historyserver:
-    image: gudari/hadoop:3.2.1
+    image: gudari/hadoop:2.10.1
     container_name: historyserver
     hostname: historyserver
     environment:
@@ -72,7 +72,7 @@ services:
       - ./hadoop.env
 
   timelineserver:
-    image: gudari/hadoop:3.2.1
+    image: gudari/hadoop:2.10.1
     container_name: timelineserver
     hostname: timelineserver
     environment:

@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   hue:
-    image: gudari/hue:4.7.0
+    image: gudari/hue:4.7.1
     container_name: hue
     hostname: hue
     env_file:

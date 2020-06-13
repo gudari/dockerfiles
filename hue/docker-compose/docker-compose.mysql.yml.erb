@@ -1,13 +1,21 @@
-  
 version: "3.8"
 
 services:
   hue:
-    image: gudari/hue:4.5.0
+    image: gudari/hue:<%= version %>
     container_name: hue
     hostname: hue
     env_file:
-    - hue.env
+    - hue-mysql.env
+
+  mysql-hue:
+    image:mysql:<%= mysql_version %>
+    container_name: mysql-hue
+    hostname: mysql-hue
+    ports:
+    - "3306:3306"
+    env_file:
+      - ./mysql.env
 
   hoster:
     image: dvdarias/docker-hoster

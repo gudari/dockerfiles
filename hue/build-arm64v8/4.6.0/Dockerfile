@@ -1,4 +1,4 @@
-FROM openjdk:11.0.7-jdk-slim-buster
+FROM arm64v8/openjdk:11.0.7-jdk-slim-buster
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Cloudera Hue docker image" Version="4.6.0"

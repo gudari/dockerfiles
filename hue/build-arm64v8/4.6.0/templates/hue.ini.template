@@ -32,10 +32,6 @@
   http_host=0.0.0.0
   http_port=8000
 
-  # Choose whether the Hue pages are embedded or not. This will improve the rendering of Hue when added inside a
-  # container element.
-  ## is_embedded=false
-
   # A comma-separated list of available Hue load balancers
   ## hue_load_balancer=
 
@@ -48,9 +44,6 @@
   # Enable development mode, where notably static files are not cached.
   dev=true
 
-  # Enable embedded development mode, where the page will be rendered inside a container div element.
-  ## dev_embedded=false
-
   # Enable or disable database debug mode.
   ## database_logging=false
 
@@ -59,9 +52,6 @@
 
   # Enable or disable backtrace for server error
   ## http_500_debug_mode=true
-
-  # Enable or disable memory profiling.
-  ## memory_profiler=false
 
   # Enable or disable instrumentation. If django_debug_mode is True, this is automatically enabled
   ## instrumentation=false
@@ -223,6 +213,9 @@
   # Choose whether to use new charting library across the whole Hue.
   ## use_new_charts=false
 
+  # Choose whether to allow multi tenancy or not.
+  ## enable_organizations=false
+
   # Editor autocomplete timeout (ms) when fetching columns, fields, tables etc.
   # To disable this type of autocompletion set the value to 0.
   ## editor_autocomplete_timeout=30000
@@ -346,7 +339,6 @@
     # - desktop.auth.backend.KnoxSpnegoDjangoBackend
     # - desktop.auth.backend.RemoteUserDjangoBackend
     # - libsaml.backend.SAML2Backend
-    # - libopenid.backend.OpenIDBackend
     # - liboauth.backend.OAuthBackend
     # - desktop.auth.backend.OIDCBackend
     #     (New oauth, support Twitter, Facebook, Google+ and Linkedin
@@ -624,7 +616,7 @@
       # client_secret=
 
   # Configuration options for specifying the Desktop Database. For more info,
-  # see http://docs.djangoproject.com/en/1.4/ref/settings/#database-engine
+  # see http://docs.djangoproject.com/en/1.11/ref/settings/#database-engine
   # ------------------------------------------------------------------------
   [[database]]
     # Database engine is typically one of:
@@ -648,7 +640,7 @@
     ## options={}
 
   # Configuration options for specifying the Desktop session.
-  # For more info, see https://docs.djangoproject.com/en/1.4/topics/http/sessions/
+  # For more info, see https://docs.djangoproject.com/en/1.11/topics/http/sessions/
   # ------------------------------------------------------------------------
   [[session]]
     # The name of the cookie to use for sessions.
@@ -672,6 +664,9 @@
     # If set, limits the number of concurrent user sessions. 1 represents 1 browser session per user. Default: 0 (unlimited sessions per user)
     ## concurrent_user_session_limit=0
 
+    # A list of hosts which are trusted origins for unsafe requests. See django's CSRF_TRUSTED_ORIGINS for more information
+    ## trusted_origins=.cloudera.com
+
   # Configuration options for connecting to an external SMTP server
   # ------------------------------------------------------------------------
   [[smtp]]
@@ -694,8 +689,10 @@
 
     # This is a list of hosts that knox proxy requests can come from
     ## knox_proxyhosts="server1.domain.com,server2.domain.com"
-    # Kerberos principal name which is allowed to impersonate others
-    ## knox_principal=knox
+    # List of Kerberos principal name which is allowed to impersonate others
+    ## knox_principal=knox1,knox2
+    # Comma separated list of strings representing the ports that the Hue server can trust as knox port.
+    ## knox_ports=80,8443
 
 
   # Configuration options for Kerberos integration for secured Hadoop clusters
@@ -798,6 +795,16 @@
    ## collection_interval=30000
 
 
+  # Configuration options for the request Tracing
+  # ------------------------------------------------------------------------
+  [[tracing]]
+  ## If tracing is enabled.
+  # enabled=false
+
+  ## Trace all the requests instead of a few specific ones like the SQL Editor. Much noisiers.
+  # trace_all=false
+
+
   # Configuration options for the Task Server
   # ------------------------------------------------------------------------
   [[task_server]]
@@ -826,6 +833,12 @@
    # Django cache to use to store temporarily used data during query execution. This is in addition to result_file_storage and result_backend.
    ## execution_storage='{"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "celery-hue"}'
 
+   # Settings for the Google Cloud lib
+   # ------------------------------------------------------------------------
+   [[gc_accounts]]
+      [[[default]]]
+        # The JSON credentials to authenticate to Google Cloud e.g. '{ "type": "service_account", "project_id": .... }'
+        # json_credentials=None
 
 ###########################################################################
 # Settings to configure the snippets available in the Notebook
@@ -867,7 +880,7 @@
   # One entry for each type of snippet.
   [[interpreters]]
     # Define the name and how to connect and execute the language.
-    # http://cloudera.github.io/hue/latest/administrator/configuration/editor/
+    # https://docs.gethue.com/administrator/configuration/editor/
 
     # [[[mysql]]]
     #   name = MySQL
@@ -1138,44 +1151,47 @@
 
   # Port where HiveServer2 Thrift server runs on.
   hive_server_port=10000
-  
+
+  # Http thrift port for HiveServer2.
+  hive_server_http_port=10001
+
   # Host where LLAP is running
   ## llap_server_host = localhost
-  
-  # Main Port where LLAP runs
+
+  # LLAP binary thrift port
   ## llap_server_port = 10500
-  
-  # Port where LLAP Thrift server runs on
+
+  # LLAP HTTP Thrift port
   ## llap_server_thrift_port = 10501
-  
+
   # Alternatively, use Service Discovery for LLAP (Hive Server Interactive) and/or Hiveserver2, this will override server and thrift port
-  
-  # Whether to use Service Discovery for LLAP 
+
+  # Whether to use Service Discovery for LLAP
   ## hive_discovery_llap = true
-  
+
   # is llap (hive server interactive) running in an HA configuration (more than 1)
   # important as the zookeeper structure is different
   ## hive_discovery_llap_ha = false
-  
+
   # Shortcuts to finding LLAP znode Key
   # Non-HA - hiveserver-interactive-site - hive.server2.zookeeper.namespace ex hive2 = /hive2
   # HA-NonKerberized - <llap_app_name>_llap ex app name llap0 = /llap0_llap
   # HA-Kerberized - <llap_app_name>_llap-sasl ex app name llap0 = /llap0_llap-sasl
   ## hive_discovery_llap_znode = /hiveserver2-hive2
-  
+
   # Whether to use Service Discovery for HiveServer2
   ## hive_discovery_hs2 = true
-  
+
   # Hiveserver2 is hive-site hive.server2.zookeeper.namespace ex hiveserver2 = /hiverserver2
   ## hive_discovery_hiveserver2_znode = /hiveserver2
-  
+
   # Applicable only for LLAP HA
   # To keep the load on zookeeper to a minimum
   # ---- we cache the LLAP activeEndpoint for the cache_timeout period
   # ---- we cache the hiveserver2 endpoint for the length of session
   # configurations to set the time between zookeeper checks
   ## cache_timeout = 60
-  
+
   # Host where Hive Metastore Server (HMS) is running.
   # If Kerberos security is enabled, the fully-qualified domain name (FQDN) is required.
   hive_metastore_host=$(beeswax_hive_metastore_host)
@@ -1216,8 +1232,8 @@
   ## max_number_of_sessions=1
 
   # Thrift version to use when communicating with HiveServer2.
-  # New column format is from version 7.
-  ## thrift_version=7
+  # Version 11 comes with Hive 3.0. If issues, try 7.
+  ## thrift_version=11
 
   # A comma-separated list of white-listed Hive configuration properties that users are authorized to set.
   ## config_whitelist=hive.map.aggr,hive.exec.compress.output,hive.exec.parallel,hive.execution.engine,mapreduce.job.queuename
@@ -1531,7 +1547,7 @@
 # Settings to configure Job Designer
 ###########################################################################
 
-[jobsub]
+#[jobsub]
 
   # Location on local FS where examples and template are stored.
   ## local_data_dir=..../data
@@ -1561,8 +1577,11 @@
   # Show the version 2 of app which unifies all the past browsers into one.
   ## enable_v2=true
 
-  # Show the query section for listing and showing more troubleshooting information.
+  # Show the Impala query section for listing and showing more troubleshooting information.
   ## enable_query_browser=true
+
+  # Show the Hive query section for listing and showing more troubleshooting information.
+  ## enable_hive_query_browser=false
 
 
 ###########################################################################
@@ -1854,10 +1873,10 @@
   ## authn_requests_signed=false
 
   # Have Hue initiated authn response be signed.
-  ## want_response_signed=true
+  ## want_response_signed=false
 
   # Have Hue initiated authn assertions response be signed.
-  ## want_assertions_signed=true
+  ## want_assertions_signed=false
 
   # Have Hue initiated logout requests be signed and provide a certificate.
   ## logout_requests_signed=false
@@ -1867,25 +1886,6 @@
 
   # Performs the logout or not.
   ## logout_enabled=true
-
-
-###########################################################################
-# Settings to configure OpenID
-###########################################################################
-
-[libopenid]
-  # (Required) OpenId SSO endpoint url.
-  ## server_endpoint_url=https://www.google.com/accounts/o8/id
-
-  # OpenId 1.1 identity url prefix to be used instead of SSO endpoint url
-  # This is only supported if you are using an OpenId 1.1 endpoint
-  ## identity_url_prefix=https://app.onelogin.com/openid/your_company.com/
-
-  # Create users from OPENID on login.
-  ## create_users_on_login=true
-
-  # Use email for username
-  ## use_email_for_username=true
 
 
 ###########################################################################
@@ -1960,8 +1960,8 @@
     # Enable the Kafka integration.
     ## is_enabled=false
 
-    # Base URL of Kafka REST API.
-    ## api_url=http://localhost:8082
+    # Base URL of Kafka Ksql API.
+    ## ksql_api_url=http://127.0.0.1:8088
 
 
 ###########################################################################
@@ -1975,6 +1975,9 @@
     ## api_url=http://localhost:7180/api
 
   [[optimizer]]
+    # Type of Optimizer connector to query, e.g. optimizer, dummy
+    # interface=optimizer
+
     # Hostnameto Optimizer API or compatible service.
     ## hostname=navoptapi.us-west-1.optimizer.altus.cloudera.com
 
@@ -2024,6 +2027,12 @@
     # Limits found entities to a specific cluster. When empty the entities from all clusters will be included in the
     # search results.
     ## search_cluster=
+
+    # Set to true when authenticating via kerberos instead of username/password
+    ## kerberos_enabled=core_site.is_kerberos_enabled()
+
+    # Directory of the configurations.
+    ## conf_dir=HUE_CONF_DIR/hive-conf
 
   # Deprecated by [[catalog]]
   [[navigator]]
