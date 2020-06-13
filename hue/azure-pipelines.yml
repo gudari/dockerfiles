@@ -42,6 +42,8 @@ jobs:
   steps:
   - bash: |
       sudo apt-get install -y qemu-user-static
+      docker buildx create --name nubuilder
+      docker buildx use nubuilder
       docker buildx inspect --bootstrap
       export DOCKER_PASSWORD=$(docker_password)
       export DOCKER_USERNAME=$(docker_username)
