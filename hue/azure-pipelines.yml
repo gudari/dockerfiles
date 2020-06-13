@@ -42,9 +42,9 @@ jobs:
   steps:
   - bash: |
       sudo apt-get install -y qemu-user-static
-      env DOCKER_CLI_EXPERIMENTAL=enabled docker buildx ls
-      env DOCKER_CLI_EXPERIMENTAL=enabled docker buildx create --name nubuilder
-      env DOCKER_CLI_EXPERIMENTAL=enabled docker buildx ls
+      export DOCKER_CLI_EXPERIMENTAL=enabled
+      sudo systemctl restart docker
+      docker buildx create --name nubuilder
       docker buildx use nubuilder
       docker buildx inspect --bootstrap
       export DOCKER_PASSWORD=$(docker_password)
