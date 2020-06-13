@@ -42,9 +42,6 @@ jobs:
   steps:
   - bash: |
       sudo apt-get install -y qemu-user-static
-      export DOCKER_CLI_EXPERIMENTAL=enabled
-      mkdir -p ~/.docker/cli-plugins
-      wget https://github.com/docker/buildx/releases/download/v0.4.1/buildx-v0.4.1.linux-amd64 -O ~/.docker/cli-plugins/docker-buildx
       export DOCKER_PASSWORD=$(docker_password)
       export DOCKER_USERNAME=$(docker_username)
       cd $(Build.SourcesDirectory)/hue

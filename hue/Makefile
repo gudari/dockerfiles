@@ -90,11 +90,11 @@ image:
 		-t $(IMAGE_NAME):latest \
 		build/$(VERSION)
 image-arm64v8:
-	docker build \
+	docker buildx build \
 		--build-arg HUE_VERSION=$(VERSION) \
 		-t $(IMAGE_NAME):$(VERSION)-arm64v8-$(BUILD_DATE) \
 		-t $(IMAGE_NAME):$(VERSION)-arm64v8 \
-		build-arm64v8/$(VERSION)
+		build-arm64v8/$(VERSION) --platform linux/arm64
 
 image-all:
 	(set -e ; $(foreach ver, $(ALL_VERSIONS), \
@@ -127,8 +127,8 @@ push:
 
 push-arm64v8:
 	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
-	docker push $(IMAGE_NAME):$(VERSION)-arm64v8-$(BUILD_DATE)
-	docker push $(IMAGE_NAME):$(VERSION)-arm64v8
+	docker buildx build --push $(IMAGE_NAME):$(VERSION)-arm64v8-$(BUILD_DATE) --platform linux/arm64
+	docker buildx build --push $(IMAGE_NAME):$(VERSION)-arm64v8 --platform linux/arm64
 
 push-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
