@@ -1,4 +1,4 @@
-FROM openjdk:11.0.7-jdk-buster
+FROM openjdk:11.0.7-jdk-slim-buster
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Hadoop docker image" Version="3.2.1"

@@ -1,6 +1,6 @@
 IMAGE_NAME := gudari/hadoop
-BASE_IMAGE := openjdk:11.0.7-jdk-buster
-ARM64V8_BASE_IMAGE := arm64v8/openjdk:11.0.7-jdk-buster
+BASE_IMAGE := openjdk:11.0.7-jdk-slim-buster
+ARM64V8_BASE_IMAGE := arm64v8/openjdk:11.0.7-jdk-slim-buster
 BUILD_DATE := `date +"%y.%m.%d"`
 ZOOKEEPER_VERSION := 3.4.14
 
@@ -110,7 +110,7 @@ src-all:
 
 build: src image
 
-build-arm64v8: src image-arm64v8
+build-arm64v8: src-arm64v8 image-arm64v8
 
 build-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
