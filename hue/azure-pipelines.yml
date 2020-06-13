@@ -44,6 +44,7 @@ jobs:
       sudo apt-get install -y qemu-user-static
       export DOCKER_CLI_EXPERIMENTAL=enabled
       sudo systemctl restart docker
+      docker version
       docker buildx create --name nubuilder
       docker buildx use nubuilder
       docker buildx inspect --bootstrap
