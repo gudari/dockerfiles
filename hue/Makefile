@@ -15,7 +15,7 @@ dockerfile:
 	mkdir -p build/$(VERSION)/templates
 	cp scripts/* build/$(VERSION)/scripts/
 	cp templates/hue.ini.$(VERSION).jinja2 build/$(VERSION)/templates/hue.ini.jinja2
-	docker run --rm -i -v $(PWD)/Dockerfile.template.amd64.erb:/Dockerfile.erb:ro \
+	docker run --rm -i -v $(PWD)/Dockerfile.template.erb:/Dockerfile.erb:ro \
 		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
 			base_image='$(BASE_IMAGE)' \
@@ -26,7 +26,7 @@ dockerfile-arm64v8:
 	mkdir -p build-arm64v8/$(VERSION)/templates
 	cp scripts/* build-arm64v8/$(VERSION)/scripts/
 	cp templates/hue.ini.$(VERSION).jinja2 build-arm64v8/$(VERSION)/templates/hue.ini.jinja2
-	docker run --rm -i -v $(PWD)/Dockerfile.template.arm64v8.erb:/Dockerfile.erb:ro \
+	docker run --rm -i -v $(PWD)/Dockerfile.template.erb:/Dockerfile.erb:ro \
 		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
 			base_image='$(ARM64V8_BASE_IMAGE)' \
