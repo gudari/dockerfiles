@@ -7,6 +7,8 @@ services:
     hostname: hue
     environment:
       SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075"
+    depends_on:
+      - namenode-0
     env_file:
     - hue.env
 
@@ -30,7 +32,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode-0:50070"
     depends_on:
-      - namenode
+      - namenode-0
     env_file:
       - ./hadoop.env
 
