@@ -22,7 +22,7 @@
 
   # Set this to a random string, the longer the better.
   # This is used for secure hashing in the session store.
-  secret_key=$(desktop_secret_key)
+  secret_key={{ desktop_secret_key }}
 
   # Execute this script to produce the Django secret key. This will be used when
   # 'secret_key' is not set.
@@ -195,7 +195,9 @@
 
   # Comma separated list of apps to not load at server startup.
   # e.g.: pig,zookeeper
-  app_blacklist=$(desktop_app_blacklist)
+  {% if desktop_app_blacklist is defined %}
+  app_blacklist={{ desktop_app_blacklist }}
+  {% endif %}
 
   # Id of the cluster where Hue is located.
   ## cluster_id='default'
@@ -636,17 +638,19 @@
     # Note for Oracle, options={"threaded":true} must be set in order to avoid crashes.
     # Note for Oracle, you can use the Oracle Service Name by setting "host=" and "port=" and then "name=<host>:<port>/<service_name>".
     # Note for MariaDB use the 'mysql' engine.
-    engine=$(desktop_database_engine)
-    host=$(desktop_database_host)
-    port=$(desktop_database_port)
-    user=$(desktop_database_user)
-    password=$(desktop_database_password)
+    engine={{ desktop_database_engine|default("sqlite3", true) }}
+    {% if desktop_database_engine == "mysql" or desktop_database_engine == "postgresql_psycopg2" or desktop_database_engine == "oracle" %}
+    host={{ desktop_database_host }}
+    port={{ desktop_database_port }}
+    user={{ desktop_database_user }}
+    password={{ desktop_database_password }}
+    {% endif %}
     # conn_max_age option to make database connection persistent value in seconds
     # https://docs.djangoproject.com/en/1.9/ref/databases/#persistent-connections
     ## conn_max_age=0
     # Execute this script to produce the database password. This will be used when 'password' is not set.
     ## password_script=/path/script
-    name=$(desktop_database_name)
+    name={{ desktop_database_name|default("desktop/desktop.db", true)  }}
     ## options={}
 
   # Configuration options for specifying the Desktop session.
@@ -1075,7 +1079,7 @@
     [[[default]]]
       # Enter the filesystem uri
       #fs_defaultfs=hdfs://localhost:8020
-      fs_defaultfs=$(hadoop_default_fs_defaultfs)
+      fs_defaultfs={{ hadoop_default_fs_defaultfs }}
 
       # NameNode logical name.
       ## logical_name=
@@ -1084,7 +1088,7 @@
       # Domain should be the NameNode or HttpFs host.
       # Default port is 14000 for HttpFs.
       ## webhdfs_url=http://localhost:50070/webhdfs/v1
-      webhdfs_url=$(hadoop_default_webhdfs_url)
+      webhdfs_url={{ hadoop_default_webhdfs_url }}
 
       # Change this if your HDFS cluster is Kerberos-secured
       ## security_enabled=false
@@ -1102,7 +1106,7 @@
 
     [[[default]]]
       # Enter the host on which you are running the ResourceManager
-      resourcemanager_host=$(hadoop_default_resourcemanager_host)
+      resourcemanager_host={{ hadoop_default_resourcemanager_host }}
 
       # The port where the ResourceManager IPC listens on
       resourcemanager_port=8032
@@ -1117,13 +1121,13 @@
       ## security_enabled=false
 
       # URL of the ResourceManager API
-      resourcemanager_api_url=$(hadoop_default_resourcemanager_api_url)
+      resourcemanager_api_url={{ hadoop_default_resourcemanager_api_url }}
 
       # URL of the ProxyServer API
-      proxy_api_url=$(hadoop_default_proxy_api_url)
+      proxy_api_url={{ hadoop_default_proxy_api_url }}
 
       # URL of the HistoryServer API
-      history_server_api_url=$(hadoop_default_history_server_api_url)
+      history_server_api_url={{ hadoop_default_history_server_api_url }}
 
       # URL of the Spark History Server
       ## spark_history_server_url=http://localhost:18088
@@ -1160,7 +1164,7 @@
 
   # Host where HiveServer2 is running.
   # If Kerberos security is enabled, use fully-qualified domain name (FQDN).
-  hive_server_host=$(beeswax_hive_server_host)
+  hive_server_host={{ beeswax_hive_server_host }}
 
   # Port where HiveServer2 Thrift server runs on.
   hive_server_port=10000
@@ -1207,7 +1211,7 @@
 
   # Host where Hive Metastore Server (HMS) is running.
   # If Kerberos security is enabled, the fully-qualified domain name (FQDN) is required.
-  hive_metastore_host=$(beeswax_hive_metastore_host)
+  hive_metastore_host={{ beeswax_hive_metastore_host }}
 
   # Configure the port the Hive Metastore Server runs on.
   hive_metastore_port=9083
@@ -1670,7 +1674,7 @@
 [liboozie]
   # The URL where the Oozie service runs on. This is required in order for
   # users to submit jobs. Empty value disables the config check.
-  oozie_url=$(liboozie_oozie_url)
+  oozie_url={{ liboozie_oozie_url }}
 
   # Requires FQDN in oozie_url if enabled
   ## security_enabled=false

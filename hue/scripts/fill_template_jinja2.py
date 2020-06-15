@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-import os, sys, re
+import os, sys
+from jinja2 import Template
 
 if len(sys.argv) != 4:
     print("Allowed paremeters are 3, the source, destination and environment variable prefix parameters and you are passing %d args" % (len(sys.argv) - 1))
@@ -21,15 +22,6 @@ def getEnvironmentVariables(env_prefix):
             hue_env[new_key] = all_env[key]
     return hue_env
 
-def remove_duplicates(values):
-    output = []
-    seen = set()
-    for value in values:
-        if value not in seen:
-            output.append(value)
-            seen.add(value)
-    return seen
-
 if __name__ == "__main__":
 
     template = open(template_file,"r")
@@ -37,15 +29,8 @@ if __name__ == "__main__":
     template.close()
 
     hue_env = getEnvironmentVariables(env_prefix)
-
-    variable_list = re.findall(r"\$\(([\w_]+)\)", template_content)
-    variable_list = remove_duplicates(variable_list)
-
-    for variable in variable_list:
-        regex = r"\$\({}\)".format(variable)
-
-        template_content = re.sub(regex, hue_env[variable], template_content, 0)
+    result_content = Template(template_content).render(hue_env)
 
     result = open(config_file,"w")
-    result.write(template_content)
+    result.write(result_content)
     result.close()

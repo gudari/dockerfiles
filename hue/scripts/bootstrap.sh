@@ -37,7 +37,7 @@ function wait_for_it()
 mkdir -p $HUE_HOME/desktop/conf
 
 rm -fr /opt/hue/desktop/conf/*
-/opt/init/fill_template.py /opt/templates/hue.ini.template /opt/hue/desktop/conf/hue.ini HUE_INI
+$INIT_DIR/fill_template_jinja2.py $TEMPLATES_DIR/hue.ini.jinja2 $HUE_HOME/desktop/conf/hue.ini HUE_INI
 
 for i in ${SERVICE_PRECONDITION[@]}
 do

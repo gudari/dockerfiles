@@ -67,8 +67,13 @@ WORKDIR $HUE_HOME
 RUN mkdir -p ${TEMPLATES_DIR} \
     && mkdir -p ${INIT_DIR}
 COPY ./scripts/* ${INIT_DIR}/
-COPY ./templates/hue.ini.template ${TEMPLATES_DIR}
-RUN chmod +x ${INIT_DIR}/*
+COPY ./templates/hue.ini.jinja2 ${TEMPLATES_DIR}
+RUN apt-get update \
+    && apt-get install -y python-jinja2 python-psycopg2 \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && chmod +x ${INIT_DIR}/*
 
 EXPOSE 8000
 

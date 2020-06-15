@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  hue:
+    image: gudari/hue:<%= version %>
+    container_name: hue
+    hostname: hue
+    environment:
+      SERVICE_PRECONDITION: "postgres-hue:5432"
+    env_file:
+    - hue-postgres.env
+
+  postgres-hue:
+    image: postgres:<%= postgres_version %>
+    container_name: postgres-hue
+    hostname: postgres-hue
+    ports:
+    - "5432:5432"
+    env_file:
+      - ./postgres.env
+    volumes:
+      - ./storage/postgres:/var/lib/postgresql/data
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hue_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts

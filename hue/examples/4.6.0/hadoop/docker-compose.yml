@@ -6,14 +6,14 @@ services:
     container_name: hue
     hostname: hue
     environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+      SERVICE_PRECONDITION: "namenode-0:50070 datanode-0:50075"
     env_file:
     - hue.env
 
-  namenode:
-    image: gudari/hadoop:2.10.1
-    container_name: namenode
-    hostname: namenode
+  namenode-0:
+    image: gudari/hadoop:2.10.0
+    container_name: namenode-0
+    hostname: namenode-0
     volumes:
       - ./storage/namenode:/hadoop/dfs/name
     environment:
@@ -21,65 +21,16 @@ services:
     env_file:
       - ./hadoop.env
 
-  datanode:
-    image: gudari/hadoop:2.10.1
-    container_name: datanode
-    hostname: datanode
+  datanode-0:
+    image: gudari/hadoop:2.10.0
+    container_name: datanode-0
+    hostname: datanode-0
     volumes:
       - ./storage/datanode:/hadoop/dfs/data
     environment:
-      SERVICE_PRECONDITION: "namenode:9870"
+      SERVICE_PRECONDITION: "namenode-0:50070"
     depends_on:
       - namenode
-    env_file:
-      - ./hadoop.env
-
-  resourcemanager:
-    image: gudari/hadoop:2.10.1
-    container_name: resourcemanager
-    hostname: resourcemanager
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864"
-    depends_on:
-      - namenode
-      - datanode
-    env_file:
-      - ./hadoop.env
-
-  nodemanager:
-    image: gudari/hadoop:2.10.1
-    container_name: nodemanager
-    hostname: nodemanager
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
-    depends_on:
-      - namenode
-      - datanode
-      - resourcemanager
-    env_file:
-      - ./hadoop.env
-
-  historyserver:
-    image: gudari/hadoop:2.10.1
-    container_name: historyserver
-    hostname: historyserver
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
-    depends_on:
-      - namenode
-      - datanode
-    env_file:
-      - ./hadoop.env
-
-  timelineserver:
-    image: gudari/hadoop:2.10.1
-    container_name: timelineserver
-    hostname: timelineserver
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
-    depends_on:
-      - namenode
-      - datanode
     env_file:
       - ./hadoop.env
 

@@ -5,17 +5,21 @@ services:
     image: gudari/hue:<%= version %>
     container_name: hue
     hostname: hue
+    environment:
+      SERVICE_PRECONDITION: "mariadb-hue:3306"
     env_file:
-    - hue-mysql.env
+    - hue-mariadb.env
 
-  mysql-hue:
-    image:mysql:<%= mysql_version %>
-    container_name: mysql-hue
-    hostname: mysql-hue
+  mariadb-hue:
+    image: mariadb:<%= mariadb_version %>
+    container_name: mariadb-hue
+    hostname: mariadb-hue
     ports:
     - "3306:3306"
     env_file:
-      - ./mysql.env
+      - ./mariadb.env
+    volumes:
+      - ./storage/mariadb:/var/lib/mysql
 
   hoster:
     image: dvdarias/docker-hoster
