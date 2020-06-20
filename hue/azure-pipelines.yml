@@ -21,20 +21,6 @@ jobs:
       export DOCKER_USERNAME=$(docker_username)
       cd $(Build.SourcesDirectory)/hue
       make release VERSION=4.6.0
-- job: build_4_6_0_arm64v8
-  steps:
-  - bash: sudo apt-get install -y qemu-user-static
-  - bash: |
-      sudo apt-get install -y qemu-user-static
-      export DOCKER_CLI_EXPERIMENTAL=enabled
-      docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
-      docker buildx create --name nubuilder
-      docker buildx use nubuilder
-      docker buildx inspect --bootstrap
-      export DOCKER_PASSWORD=$(docker_password)
-      export DOCKER_USERNAME=$(docker_username)
-      cd $(Build.SourcesDirectory)/hue
-      make release-arm64v8 VERSION=4.6.0
 - job: build_4_7_1
   steps:
   - bash: |
@@ -42,16 +28,3 @@ jobs:
       export DOCKER_USERNAME=$(docker_username)
       cd $(Build.SourcesDirectory)/hue
       make release VERSION=4.7.1
-- job: build_4_7_1_arm64v8
-  steps:
-  - bash: |
-      sudo apt-get install -y qemu-user-static
-      export DOCKER_CLI_EXPERIMENTAL=enabled
-      docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
-      docker buildx create --name nubuilder
-      docker buildx use nubuilder
-      docker buildx inspect --bootstrap
-      export DOCKER_PASSWORD=$(docker_password)
-      export DOCKER_USERNAME=$(docker_username)
-      cd $(Build.SourcesDirectory)/hue
-      make release-arm64v8 VERSION=4.7.1

@@ -50,16 +50,6 @@ example:
 			version='$(VERSION)' \
 		/docker-compose.yml.erb > examples/$(VERSION)/basic/docker-compose.yml
 
-example-hadoop:
-	mkdir -p examples/$(VERSION)/hadoop
-	cp env/hue.env examples/$(VERSION)/hadoop/hue.env
-	cp env/hadoop.env examples/$(VERSION)/hadoop/hadoop.env
-	docker run --rm -i -v $(PWD)/docker-compose/docker-compose.hadoop.yml.erb:/docker-compose.yml.erb:ro \
-		ruby:alpine erb -U -T - \
-			version='$(VERSION)' \
-			hadoop_version='$(HADOOP_VERSION)' \
-		/docker-compose.yml.erb > examples/$(VERSION)/hadoop/docker-compose.yml
-
 example-mariadb:
 	mkdir -p examples/$(VERSION)/mariadb
 	cp env/hue-mariadb.env examples/$(VERSION)/mariadb/hue-mariadb.env
@@ -86,10 +76,6 @@ example-all:
 			VERSION=$(ver) ; \
 	))
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
-		make example-hadoop \
-			VERSION=$(ver) ; \
-	))
-	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make example-mariadb \
 			VERSION=$(ver) ; \
 	))
@@ -98,7 +84,7 @@ example-all:
 			VERSION=$(ver) ; \
 	))
 
-src: dockerfile example example-hadoop example-mariadb example-postgres
+src: dockerfile example example-mariadb example-postgres
 
 src-arm64v8: dockerfile-arm64v8
 
