@@ -8,7 +8,7 @@ ENV HADOOP_HOME=/opt/hadoop
 ENV INIT_DIR=/opt/init
 
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y wget netcat procps \
+    && apt-get install --no-install-recommends -y wget netcat procps libsnappy-dev \
     && wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz \
     && mkdir -p $HADOOP_HOME \
     && tar -xvzf hadoop-${HADOOP_VERSION}.tar.gz -C ${HADOOP_HOME} --strip-components=1 \
@@ -24,6 +24,22 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p ${INIT_DIR}
+
+RUN apt-get update \
+    && buildDep="wget libdata-compare-perl gcc make" \
+    && apt-get install -y $buildDep \
+    && wget https://www.openssl.org/source/old/1.0.2/openssl-1.0.2u.tar.gz \
+    && tar -xvzf openssl-1.0.2u.tar.gz \
+    && rm -fr openssl-1.0.2u.tar.gz \
+    && cd openssl-1.0.2u \
+    && ./config shared \
+    && make install \
+    && apt-get remove -y $buildDep \
+    && rm -fr /openssl-1.0.2u \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/local/ssl/lib/libcrypto.so /usr/lib/x86_64-linux-gnu/libcrypto.so
 
 ENV HADOOP_PREFIX=${HADOOP_HOME} \
     HADOOP_COMMON_HOME=${HADOOP_HOME} \

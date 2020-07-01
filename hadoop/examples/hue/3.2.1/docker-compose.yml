@@ -1,0 +1,129 @@
+version: "3.7"
+
+services:
+services:
+  hue:
+    image: gudari/hue:4.7.1
+    container_name: hue
+    hostname: hue
+    environment:
+      SERVICE_PRECONDITION: "hue-postgres:5432"
+    env_file:
+    - hue-postgres.env
+
+  hue-postgres:
+    image: postgres:12.3
+    container_name: hue-postgres
+    hostname: hue-postgres
+    ports:
+    - "5432:5432"
+    env_file:
+      - ./hue-postgres.env
+    volumes:
+      - ./storage/hue-postgres:/var/lib/postgresql/data
+
+  namenode-0:
+    image: gudari/hadoop:3.2.1
+    container_name: namenode-0
+    hostname: namenode-0
+    ports:
+    - "50070:50070"
+    volumes:
+      - ./storage/namenode_0:/hadoop/dfs/name
+    environment:
+      - HADOOP_CLUSTER_NAME=local
+    env_file:
+      - ./hadoop.env
+    networks:
+      - hadoop.local
+
+  datanode-0:
+    image: gudari/hadoop:3.2.1
+    container_name: datanode-0
+    hostname: datanode-0
+    volumes:
+      - ./storage/datanode_0:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode-0:9870"
+    depends_on:
+      - namenode-0
+    env_file:
+      - ./hadoop.env
+    networks:
+      - hadoop.local
+
+  resourcemanager-0:
+    image: gudari/hadoop:3.2.1
+    container_name: resourcemanager-0
+    hostname: resourcemanager-0
+    environment:
+      SERVICE_PRECONDITION: "namenode-0:9870 datanode-0:9864"
+    depends_on:
+      - namenode-0
+      - datanode-0
+    env_file:
+      - ./hadoop.env
+    networks:
+      - hadoop.local
+
+  nodemanager-0:
+    image: gudari/hadoop:3.2.1
+    container_name: nodemanager-0
+    hostname: nodemanager-0
+    environment:
+      SERVICE_PRECONDITION: "namenode-0:9870 datanode-0:9864 resourcemanager-0:8088"
+    depends_on:
+      - namenode-0
+      - datanode-0
+      - resourcemanager-0
+    env_file:
+      - ./hadoop.env
+    networks:
+      - hadoop.local
+
+  historyserver:
+    image: gudari/hadoop:3.2.1
+    container_name: historyserver
+    hostname: historyserver
+    environment:
+      SERVICE_PRECONDITION: "namenode-0:9870 datanode-0:9864 resourcemanager-0:8088"
+    depends_on:
+      - namenode-0
+      - datanode-0
+      - resourcemanager-0
+    env_file:
+      - ./hadoop.env
+    networks:
+      - hadoop.local
+
+  timelineserver:
+    image: gudari/hadoop:3.2.1
+    container_name: timelineserver
+    hostname: timelineserver
+    volumes:
+      - ./storage/timelineserver:/hadoop/yarn/timeline
+    environment:
+      SERVICE_PRECONDITION: "namenode-0:9870 datanode-0:9864 resourcemanager-0:8088"
+    depends_on:
+      - namenode-0
+      - datanode-0
+      - resourcemanager-0
+    env_file:
+      - ./hadoop.env
+    networks:
+      - hadoop.local
+
+  hoster:
+    image: dvdarias/docker-hoster
+    container_name: hadoop_hoster
+    hostname: hadoop_hoster
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      - /etc/hosts:/tmp/hosts
+    networks:
+      - hadoop.local
+
+networks:
+  hadoop.local:
+    driver: bridge
+    name: hadoop.local
