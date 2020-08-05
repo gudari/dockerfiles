@@ -1,4 +1,4 @@
-FROM gudari/openjdk:8.0.252
+FROM openjdk:8u252-jdk-slim-buster
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Apache Zookeeper docker image" Version="3.4.14"
@@ -8,12 +8,20 @@ ENV ZOOKEEPER_HOME=/opt/zookeeper
 ENV INIT_DIR=/opt/init
 
 
+RUN set -eux; \
+    groupadd -r zookeeper --gid=1000; \
+    useradd -r -g zookeeper --uid=1000 zookeeper;
+
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y wget netcat \
+    && apt-get install --no-install-recommends -y wget netcat gosu \
     && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
+    && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz.sha512 \
+    && sha512sum -c zookeeper-${ZOOKEEPER_VERSION}.tar.gz.sha512 \
     && mkdir -p ${ZOOKEEPER_HOME} \
-    && tar xvf zookeeper-${ZOOKEEPER_VERSION}.tar.gz -C ${ZOOKEEPER_HOME} --strip-components=1 \
+    && chown -R zookeeper:zookeeper ${ZOOKEEPER_HOME} \
+    && su - zookeeper -c "tar xvf zookeeper-${ZOOKEEPER_VERSION}.tar.gz -C ${ZOOKEEPER_HOME} --strip-components=1" \
     && rm -fr zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
+    && rm -fr zookeeper-${ZOOKEEPER_VERSION}.tar.gz.sha512 \
     && rm -fr $ZOOKEEPER_HOME/src \
     $ZOOKEEPER_HOME/recipes \
     $ZOOKEEPER_HOME/docs \
@@ -31,7 +39,12 @@ RUN apt-get update \
 
 WORKDIR ${ZOOKEEPER_HOME}
 
-COPY scripts/bootstrap.sh ${INIT_DIR}/bootstrap.sh
-RUN chmod +x ${INIT_DIR}/bootstrap.sh
+ENV PATH=${PATH}:${ZOOKEEPER_HOME}/bin
 
-CMD ${INIT_DIR}/bootstrap.sh
+EXPOSE 2181 2888 3888 8080
+
+COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD [ "zkServer.sh", "start-foreground" ]

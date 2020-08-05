@@ -11,7 +11,6 @@ services:
 <% for @j in 1..@max -%>
       ZOO_CFG_server_<%= @j %>: "zookeeper-server-<%= @j %>:2888:3888"
 <% end -%>
-      ZOO_MYID: <%= @i %>
     env_file:
     - zookeeper.env
 <% end %>

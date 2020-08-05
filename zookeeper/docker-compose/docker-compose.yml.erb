@@ -1,10 +1,10 @@
 version: "3.7"
 
 services:
-  zookeeper-server:
+  zookeeper-server-0:
     image: gudari/zookeeper:<%= version %>
-    container_name: zookeeper-server
-    hostname: zookeeper-server
+    container_name: zookeeper-server-0
+    hostname: zookeeper-server-0
     env_file:
     - zookeeper.env
 

@@ -11,7 +11,6 @@ services:
       ZOO_CFG_server_1: "zookeeper-server-1:2888:3888"
       ZOO_CFG_server_2: "zookeeper-server-2:2888:3888"
       ZOO_CFG_server_3: "zookeeper-server-3:2888:3888"
-      ZOO_MYID: 1
     env_file:
     - zookeeper.env
 
@@ -23,7 +22,6 @@ services:
       ZOO_CFG_server_1: "zookeeper-server-1:2888:3888"
       ZOO_CFG_server_2: "zookeeper-server-2:2888:3888"
       ZOO_CFG_server_3: "zookeeper-server-3:2888:3888"
-      ZOO_MYID: 2
     env_file:
     - zookeeper.env
 
@@ -35,7 +33,6 @@ services:
       ZOO_CFG_server_1: "zookeeper-server-1:2888:3888"
       ZOO_CFG_server_2: "zookeeper-server-2:2888:3888"
       ZOO_CFG_server_3: "zookeeper-server-3:2888:3888"
-      ZOO_MYID: 3
     env_file:
     - zookeeper.env
 

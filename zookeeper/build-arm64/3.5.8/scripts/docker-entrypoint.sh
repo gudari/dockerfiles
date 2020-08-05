@@ -1,7 +1,14 @@
 #!/bin/bash
 
-ZOO_CFG_dataDir=${ZOO_CFG_dataDir:-/var/lib/zookeeper}
-ZOO_MYID=${ZOO_MYID:-1}
+#Default values
+export ZOO_CFG_dataDir=${ZOO_CFG_dataDir:-/data}
+export ZOO_CFG_dataLogDir=${ZOO_CFG_dataLogDir:-/datalog}
+HOST=$(hostname)
+if [[ $HOST =~ (.*)-([0-9]+)$ ]]; then
+    ZOO_MYID=$((${HOST: -1}+1))
+else
+  ZOO_MYID=${ZOO_MYID:-1}
+fi
 
 function generate_zoo_cfg() {
   local path=$1
@@ -58,6 +65,10 @@ generate_myid $ZOO_CFG_dataDir zoo $ZOO_MYID
 cat $ZOOKEEPER_HOME/conf/zoo.cfg
 cat $ZOO_CFG_dataDir/myid
 
-if [[ "${HOSTNAME}" =~ "zookeeper" ]]; then
-  $ZOOKEEPER_HOME/bin/zkServer.sh start-foreground
+if [[ "$1" =~ "zkServer.sh" ]]; then
+  mkdir -p "$ZOO_CFG_dataDir" "$ZOO_CFG_dataLogDir"
+  chown -R zookeeper "$ZOO_CFG_dataDir" "$ZOO_CFG_dataLogDir" "$ZOOKEEPER_HOME/conf"
+  exec gosu zookeeper "$@"
 fi
+
+exec "$@"

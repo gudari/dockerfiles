@@ -1,5 +1,6 @@
 IMAGE_NAME := gudari/zookeeper
-BASE_IMAGE := gudari/openjdk:8.0.252
+BASE_IMAGE := openjdk:8u252-jdk-slim-buster
+ARM64_BASE_IMAGE := arm64v8/adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 BUILD_DATE := `date +"%y.%m.%d"`
 ZKUI_VERSION := 2.0-SNAPSHOT
 
@@ -10,16 +11,29 @@ ALL_VERSIONS := \
 
 dockerfile:
 	mkdir -p build/$(VERSION)/scripts
-	cp scripts/bootstrap.sh build/$(VERSION)/scripts/bootstrap.sh
+	cp scripts/docker-entrypoint.sh build/$(VERSION)/scripts/docker-entrypoint.sh
 	docker run --rm -i -v $(PWD)/Dockerfile.template.erb:/Dockerfile.erb:ro \
 		ruby:alpine erb -U -T - \
 			version='$(VERSION)' \
 			base_image='$(BASE_IMAGE)' \
 		/Dockerfile.erb > build/$(VERSION)/Dockerfile
 
+dockerfile-arm64:
+	mkdir -p build-arm64/$(VERSION)/scripts
+	cp scripts/docker-entrypoint.sh build-arm64/$(VERSION)/scripts/docker-entrypoint.sh
+	docker run --rm -i -v $(PWD)/Dockerfile.template.erb:/Dockerfile.erb:ro \
+		ruby:alpine erb -U -T - \
+			version='$(VERSION)' \
+			base_image='$(ARM64_BASE_IMAGE)' \
+		/Dockerfile.erb > build-arm64/$(VERSION)/Dockerfile
+
 dockerfile-all:
 	(set -e ; $(foreach ver, $(ALL_VERSIONS), \
 		make dockerfile \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver, $(ALL_VERSIONS), \
+		make dockerfile-arm64 \
 			VERSION=$(ver) ; \
 	))
 
@@ -63,10 +77,15 @@ example-all:
 	))
 
 src: dockerfile example
+src-arm64: dockerfile-arm64
 
 src-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make src \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make src-arm64 \
 			VERSION=$(ver) ; \
 	))
 
@@ -78,17 +97,33 @@ image:
 		-t $(IMAGE_NAME):latest \
 		build/$(VERSION)
 
+image-arm64:
+	docker build \
+		--build-arg ZOOKEEPER_VERSION=$(VERSION) \
+		-t $(IMAGE_NAME):$(VERSION)-arm64-$(BUILD_DATE) \
+		-t $(IMAGE_NAME):$(VERSION)-arm64 \
+		build-arm64/$(VERSION)
+
 image-all:
 	(set -e ; $(foreach ver, $(ALL_VERSIONS), \
 		make image \
 			VERSION=$(ver) ; \
 	))
+	(set -e ; $(foreach ver, $(ALL_VERSIONS), \
+		make image-arm64 \
+			VERSION=$(ver) ; \
+	))
 
 build: src image
+build-arm64: src-arm64 image-arm64
 
 build-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make build \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make build-arm64 \
 			VERSION=$(ver) ; \
 	))
 
@@ -101,7 +136,7 @@ push:
 push-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make push \
-			VERSION=$(ver)1 ; \
+			VERSION=$(ver) ; \
 	))
 
 release: build push

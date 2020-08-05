@@ -1,9 +1,9 @@
-FROM openjdk:8u252-jdk-slim-buster
+FROM arm64v8/adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Apache Zookeeper docker image" Version="3.6.1"
+LABEL Description="Apache Zookeeper docker image" Version="3.4.14"
 
-ARG ZOOKEEPER_VERSION=3.6.1
+ARG ZOOKEEPER_VERSION=3.4.14
 ENV ZOOKEEPER_HOME=/opt/zookeeper
 ENV INIT_DIR=/opt/init
 
@@ -14,14 +14,14 @@ RUN set -eux; \
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y wget netcat gosu \
-    && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz \
-    && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz.sha512 \
-    && sha512sum -c apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz.sha512 \
+    && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
+    && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz.sha512 \
+    && sha512sum -c zookeeper-${ZOOKEEPER_VERSION}.tar.gz.sha512 \
     && mkdir -p ${ZOOKEEPER_HOME} \
     && chown -R zookeeper:zookeeper ${ZOOKEEPER_HOME} \
-    && su - zookeeper -c "tar xvf apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz -C ${ZOOKEEPER_HOME} --strip-components=1" \
-    && rm -fr apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz \
-    && rm -fr apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz.sha512 \
+    && su - zookeeper -c "tar xvf zookeeper-${ZOOKEEPER_VERSION}.tar.gz -C ${ZOOKEEPER_HOME} --strip-components=1" \
+    && rm -fr zookeeper-${ZOOKEEPER_VERSION}.tar.gz \
+    && rm -fr zookeeper-${ZOOKEEPER_VERSION}.tar.gz.sha512 \
     && rm -fr $ZOOKEEPER_HOME/src \
     $ZOOKEEPER_HOME/recipes \
     $ZOOKEEPER_HOME/docs \
