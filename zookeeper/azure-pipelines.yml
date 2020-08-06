@@ -35,10 +35,3 @@ jobs:
       export DOCKER_USERNAME=$(docker_username)
       cd $(Build.SourcesDirectory)/zookeeper
       make release VERSION=3.6.1
-- job: build_3_4_14_arm64v8
-  steps:
-  - bash: |
-      export DOCKER_PASSWORD=$(docker_password)
-      export DOCKER_USERNAME=$(docker_username)
-      cd $(Build.SourcesDirectory)/zookeeper
-      make release-arm64 VERSION=3.4.14
