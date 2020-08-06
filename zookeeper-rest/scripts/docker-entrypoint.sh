@@ -65,8 +65,10 @@ generate_rest_properties $ZOOKEEPER_REST_HOME/conf/rest.properties
 property $ZOOKEEPER_REST_HOME/conf/rest.properties zoo-rest REST_PROPERTIES
 
 #debug
-#cat $ZOOKEEPER_REST_HOME/conf/rest.properties
+cat $ZOOKEEPER_REST_HOME/conf/rest.properties
 
-if [[ "${HOSTNAME}" =~ "zookeeper-rest" ]]; then
-  $ZOOKEEPER_REST_HOME/zookeeper-rest.sh start-foreground
+if [[ "$1" =~ "zookeeper-rest" ]]; then
+  exec gosu zookeeper-rest $ZOOKEEPER_REST_HOME/zookeeper-rest.sh start-foreground
 fi
+
+exec "$@"

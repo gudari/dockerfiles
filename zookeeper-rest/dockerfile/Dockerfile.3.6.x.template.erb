@@ -10,6 +10,8 @@ ENV INIT_DIR=/opt/init
 RUN apt-get update \
     && apt-get install --no-install-recommends -y wget netcat \
     && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_REST_VERSION}/apache-zookeeper-${ZOOKEEPER_REST_VERSION}.tar.gz \
+    && wget https://archive.apache.org/dist/zookeeper/zookeeper-${ZOOKEEPER_REST_VERSION}/apache-zookeeper-${ZOOKEEPER_REST_VERSION}.tar.gz.sha512 \
+    && sha512sum -c apache-zookeeper-${ZOOKEEPER_REST_VERSION}.tar.gz.sha512 \
     && mkdir -p ${ZOOKEEPER_REST_BUILD} \
     && tar xvf apache-zookeeper-${ZOOKEEPER_REST_VERSION}.tar.gz -C ${ZOOKEEPER_REST_BUILD} --strip-components=1 \
     && rm -fr apache-zookeeper-${ZOOKEEPER_REST_VERSION}.tar.gz \
@@ -56,6 +58,17 @@ ENV INIT_DIR=/opt/init
 RUN mkdir -p ${ZOOKEEPER_REST_HOME} \
     mkdir -p ${INIT_DIR}
 
+RUN set -eux; \
+    groupadd -r zookeeper-rest --gid=1000; \
+    useradd -r -g zookeeper-rest --uid=1000 zookeeper-rest;
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y gosu \
+    && apt-get clean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p ${ZOOKEEPER_REST_HOME}
+
 WORKDIR ${ZOOKEEPER_REST_HOME}
 
 COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/zookeeper-contrib/zookeeper-contrib-rest/conf ./conf
@@ -64,8 +77,10 @@ COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/zookeeper-contrib/zookeeper-contrib-re
 COPY --from=BUILD ${ZOOKEEPER_REST_BUILD}/zookeeper-contrib/zookeeper-contrib-rest/target/zookeeper-contrib-rest-${ZOOKEEPER_REST_VERSION}.jar .
 
 COPY scripts/zookeeper-rest.sh ${ZOOKEEPER_REST_HOME}
-COPY scripts/bootstrap.sh ${INIT_DIR}
-RUN chmod +x ${ZOOKEEPER_REST_HOME}/zookeeper-rest.sh \
-    ${INIT_DIR}/bootstrap.sh
+COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chown -R zookeeper-rest:zookeeper-rest ${ZOOKEEPER_REST_HOME} \
+    && chmod +x ${ZOOKEEPER_REST_HOME}/zookeeper-rest.sh \
+    /docker-entrypoint.sh
 
-CMD ${INIT_DIR}/bootstrap.sh
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD [ "zookeeper-rest" ]

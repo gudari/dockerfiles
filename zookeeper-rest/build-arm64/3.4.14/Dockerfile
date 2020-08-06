@@ -1,9 +1,9 @@
-FROM <%= base_image %>
+FROM arm64v8/adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
-LABEL Description="Apache Zookeeper docker image" Version="<%= version %>"
+LABEL Description="Apache Zookeeper docker image" Version="3.4.14"
 
-ARG ZOOKEEPER_REST_VERSION=<%= version %>
+ARG ZOOKEEPER_REST_VERSION=3.4.14
 ENV ZOOKEEPER_REST_HOME=/opt/zookeeper-rest
 ENV TEMP_DIR=/opt/tmp
 ENV INIT_DIR=/opt/init

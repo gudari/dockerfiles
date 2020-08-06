@@ -27,7 +27,7 @@ RUN ant -Dversion=3.5.8
 WORKDIR ${ZOOKEEPER_REST_BUILD}/zookeeper-contrib/zookeeper-contrib-rest
 RUN ant -Dversion=3.5.8
 
-FROM openjdk:8u252-jdk-slim-buster
+FROM arm64v8/adoptopenjdk:8u252-b09-jdk-hotspot-bionic
 
 LABEL maintainer "Axier Artola <aartola1986@gmail.com>"
 LABEL Description="Apache Zookeeper rest docker image" Version="3.5.8"
