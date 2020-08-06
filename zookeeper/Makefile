@@ -100,8 +100,8 @@ image:
 image-arm64:
 	docker build \
 		--build-arg ZOOKEEPER_VERSION=$(VERSION) \
-		-t $(IMAGE_NAME):$(VERSION)-arm64-$(BUILD_DATE) \
-		-t $(IMAGE_NAME):$(VERSION)-arm64 \
+		-t $(IMAGE_NAME):$(VERSION)-arm64v8-$(BUILD_DATE) \
+		-t $(IMAGE_NAME):$(VERSION)-arm64v8 \
 		build-arm64/$(VERSION)
 
 image-all:
@@ -133,17 +133,32 @@ push:
 	docker push $(IMAGE_NAME):$(VERSION)
 	docker push $(IMAGE_NAME):latest
 
+push-arm64:
+	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+	docker push $(IMAGE_NAME):$(VERSION)-arm64v8-$(BUILD_DATE)
+	docker push $(IMAGE_NAME):$(VERSION)-arm64v8
+
 push-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make push \
 			VERSION=$(ver) ; \
 	))
 
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make push-arm64 \
+			VERSION=$(ver) ; \
+	))
+
 release: build push
+release-arm64: build-arm64 push-arm64
 
 release-all:
 	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
 		make release \
+			VERSION=$(ver) ; \
+	))
+	(set -e ; $(foreach ver,$(ALL_VERSIONS), \
+		make release-arm64 \
 			VERSION=$(ver) ; \
 	))
 
